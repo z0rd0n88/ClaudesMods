@@ -1,0 +1,12 @@
+{
+  "name": "idea-autopsy",
+  "description": "Three-skill idea-review loop: stress-test holes, iterate to v2, then deliver an invest/skip verdict.",
+  "version": "1.0.0",
+  "author": {
+    "name": "z0rd0n88"
+  },
+  "homepage": "https://github.com/z0rd0n88/ClaudesMods/tree/main/idea-autopsy",
+  "repository": "https://github.com/z0rd0n88/ClaudesMods",
+  "license": "MIT",
+  "keywords": ["critique", "review", "verdict", "stress-test", "iteration", "decision-making"]
+}

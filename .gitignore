@@ -1,0 +1,28 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.vscode/
+.idea/
+
+# Build outputs / packaged plugins
+*.plugin
+dist/
+build/
+
+# Local environment
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Node
+node_modules/
+
+# Memsearch plugin cache (per ~/.claude convention)
+.memsearch/

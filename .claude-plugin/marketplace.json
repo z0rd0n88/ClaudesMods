@@ -1,0 +1,24 @@
+{
+  "name": "claudes-mods",
+  "owner": {
+    "name": "z0rd0n88",
+    "url": "https://github.com/z0rd0n88"
+  },
+  "homepage": "https://github.com/z0rd0n88/ClaudesMods",
+  "repository": "https://github.com/z0rd0n88/ClaudesMods",
+  "metadata": {
+    "description": "z0rd0n88's Claude Code mods — plugins, skills, and tooling.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "idea-autopsy",
+      "source": "./idea-autopsy",
+      "description": "Three-skill idea-review loop: stress-test holes, iterate to v2, then deliver an invest/skip verdict.",
+      "version": "1.0.0",
+      "author": { "name": "z0rd0n88" },
+      "category": "productivity",
+      "keywords": ["critique", "review", "verdict", "stress-test", "iteration", "decision-making"]
+    }
+  ]
+}
