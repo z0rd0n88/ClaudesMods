@@ -18,6 +18,7 @@ claude marketplace add github:z0rd0n88/ClaudesMods
 | [`inventory`](./inventory/) | Generate `.CLAUDE.inventory.md` — a per-project audit of every Claude Code automation (hooks, skills, plugins, agents, MCP servers), tagged installed vs custom. SessionStart hook nudges when the inventory goes stale. |
 | [`total-review`](./total-review/) | Parallel multi-agent code review pattern. Fans specialised reviewers along clean layer boundaries (`domain → application → adapters`) with built-in dedup against the issue tracker. Eight canonical modes. Ships a scaffold to bootstrap the project wrapper. |
 | [`multi-agent-review`](./multi-agent-review/) | One-pass parallel review with synthesizer dedup + cross-axis severity budget. Targets PR / dir / file / spec / diff / slices. Ships a review→fix→re-review loop wrapper for iterating an open PR to clean. |
+| [`i-cant-even`](./i-cant-even/) | Design-decision advisor. Orients on the codebase, grills you one question at a time, runs a 4-persona panel (conservative + balanced + aggressive + critical-thinker) in parallel, then synthesizes a one-screen recommendation memo. The critical-thinker has veto power on framing. |
 
 Install any of them with:
 

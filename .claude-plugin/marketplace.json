@@ -46,6 +46,15 @@
       "author": { "name": "z0rd0n88" },
       "category": "productivity",
       "keywords": ["code-review", "multi-agent", "parallel", "fan-out", "synthesizer", "review-loop", "pr-review", "dedup", "severity-budget"]
+    },
+    {
+      "name": "i-cant-even",
+      "source": "./i-cant-even",
+      "description": "Design-decision advisor. Orients on the codebase, grills you, runs a 4-persona panel, delivers a one-screen recommendation memo.",
+      "version": "1.0.0",
+      "author": { "name": "z0rd0n88" },
+      "category": "productivity",
+      "keywords": ["design", "architecture-decision", "trade-offs", "advisor", "personas", "panel", "recommendation"]
     }
   ]
 }
