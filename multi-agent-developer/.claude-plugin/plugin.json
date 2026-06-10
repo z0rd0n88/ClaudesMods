@@ -1,0 +1,12 @@
+{
+  "name": "multi-agent-developer",
+  "description": "Manager-led TDD dev team (≤4 Opus agents) that debates a spec across RED→GREEN→REFACTOR rounds, synthesizes via an architect agent, materializes a worktree, and verifies via tests. Plus a one-time setup skill.",
+  "version": "1.0.0",
+  "author": {
+    "name": "z0rd0n88"
+  },
+  "homepage": "https://github.com/z0rd0n88/ClaudesMods/tree/main/multi-agent-developer",
+  "repository": "https://github.com/z0rd0n88/ClaudesMods",
+  "license": "MIT",
+  "keywords": ["multi-agent", "tdd", "developer", "dev-team", "red-green-refactor", "worktree", "spec-driven", "implementation"]
+}

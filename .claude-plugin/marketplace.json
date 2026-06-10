@@ -55,6 +55,15 @@
       "author": { "name": "z0rd0n88" },
       "category": "productivity",
       "keywords": ["design", "architecture-decision", "trade-offs", "advisor", "personas", "panel", "recommendation"]
+    },
+    {
+      "name": "multi-agent-developer",
+      "source": "./multi-agent-developer",
+      "description": "Manager-led TDD dev team (≤4 Opus agents) that debates a spec across RED→GREEN→REFACTOR rounds, synthesizes via an architect, materializes a worktree, runs tests. Plus a one-time setup skill.",
+      "version": "1.0.0",
+      "author": { "name": "z0rd0n88" },
+      "category": "productivity",
+      "keywords": ["multi-agent", "tdd", "developer", "dev-team", "red-green-refactor", "worktree", "spec-driven", "implementation"]
     }
   ]
 }

@@ -19,6 +19,7 @@ claude marketplace add github:z0rd0n88/ClaudesMods
 | [`total-review`](./total-review/) | Parallel multi-agent code review pattern. Fans specialised reviewers along clean layer boundaries (`domain → application → adapters`) with built-in dedup against the issue tracker. Eight canonical modes. Ships a scaffold to bootstrap the project wrapper. |
 | [`multi-agent-review`](./multi-agent-review/) | One-pass parallel review with synthesizer dedup + cross-axis severity budget. Targets PR / dir / file / spec / diff / slices. Ships a review→fix→re-review loop wrapper for iterating an open PR to clean. |
 | [`i-cant-even`](./i-cant-even/) | Design-decision advisor. Orients on the codebase, grills you one question at a time, runs a 4-persona panel (conservative + balanced + aggressive + critical-thinker) in parallel, then synthesizes a one-screen recommendation memo. The critical-thinker has veto power on framing. |
+| [`multi-agent-developer`](./multi-agent-developer/) | Manager-led TDD dev team (≤4 Opus agents) that debates a spec across RED → GREEN → REFACTOR rounds, synthesizes via an architect agent, materializes a worktree, and verifies via tests. Ships a one-time setup skill for activating the required framework agents. |
 
 Install any of them with:
 
