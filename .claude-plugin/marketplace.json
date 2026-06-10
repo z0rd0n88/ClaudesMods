@@ -64,6 +64,15 @@
       "author": { "name": "z0rd0n88" },
       "category": "productivity",
       "keywords": ["multi-agent", "tdd", "developer", "dev-team", "red-green-refactor", "worktree", "spec-driven", "implementation"]
+    },
+    {
+      "name": "code-rinse-repeat",
+      "source": "./code-rinse-repeat",
+      "description": "End-to-end spec→APPROVE orchestrator. Composes multi-agent-developer (build) with multi-agent-review (review-fix loop). Lather, rinse, repeat — for code.",
+      "version": "1.0.0",
+      "author": { "name": "z0rd0n88" },
+      "category": "productivity",
+      "keywords": ["multi-agent", "tdd", "end-to-end", "review-loop", "spec-to-pr", "orchestrator", "build-review-fix"]
     }
   ]
 }
