@@ -73,6 +73,15 @@
       "author": { "name": "z0rd0n88" },
       "category": "productivity",
       "keywords": ["multi-agent", "tdd", "end-to-end", "review-loop", "spec-to-pr", "orchestrator", "build-review-fix"]
+    },
+    {
+      "name": "baton",
+      "source": "./baton",
+      "description": "Long-running multi-phase build orchestrator: baton-runner queues specs as implement→review→fix units, baton-runner-multi-agent uses multi-agent dev teams per phase, baton-pass writes session handoff notes.",
+      "version": "1.0.0",
+      "author": { "name": "z0rd0n88" },
+      "category": "productivity",
+      "keywords": ["orchestrator", "multi-phase", "queue", "session-handoff", "baton-pass", "resumability", "long-running", "multi-agent"]
     }
   ]
 }
