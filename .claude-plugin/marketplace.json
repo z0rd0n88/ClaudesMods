@@ -19,6 +19,15 @@
       "author": { "name": "z0rd0n88" },
       "category": "productivity",
       "keywords": ["critique", "review", "verdict", "stress-test", "iteration", "decision-making"]
+    },
+    {
+      "name": "inventory",
+      "source": "./inventory",
+      "description": "Generate .CLAUDE.inventory.md — a per-project audit of every Claude Code automation, tagged installed vs custom.",
+      "version": "1.0.0",
+      "author": { "name": "z0rd0n88" },
+      "category": "productivity",
+      "keywords": ["inventory", "audit", "introspection", "automation", "skills", "hooks", "plugins", "agents", "mcp"]
     }
   ]
 }

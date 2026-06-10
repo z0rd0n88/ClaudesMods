@@ -15,6 +15,8 @@ claude marketplace add github:z0rd0n88/ClaudesMods
 | Plugin | What it does |
 |---|---|
 | [`idea-autopsy`](./idea-autopsy/) | Three-skill idea-review loop: stress-test holes → iterate to v2 → invest/skip verdict. One `/autopsy` command that routes by intent. |
+| [`inventory`](./inventory/) | Generate `.CLAUDE.inventory.md` — a per-project audit of every Claude Code automation (hooks, skills, plugins, agents, MCP servers), tagged installed vs custom. SessionStart hook nudges when the inventory goes stale. |
+| [`inventory`](./inventory/) | Generate `.CLAUDE.inventory.md` — a per-project audit of every Claude Code automation (hooks, skills, plugins, agents, MCP servers), tagged installed vs custom. SessionStart hook nudges when the inventory goes stale. |
 
 Install any of them with:
 
