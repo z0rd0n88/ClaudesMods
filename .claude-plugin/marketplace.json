@@ -82,6 +82,15 @@
       "author": { "name": "z0rd0n88" },
       "category": "productivity",
       "keywords": ["orchestrator", "multi-phase", "queue", "session-handoff", "baton-pass", "resumability", "long-running", "multi-agent"]
+    },
+    {
+      "name": "scratchpad",
+      "source": "./scratchpad",
+      "description": "User-invoked /scratchpad capture: append items (or check them off) on a configured GitHub checkbox issue. Smart section placement, dup-detection, never closes the issue.",
+      "version": "1.0.0",
+      "author": { "name": "z0rd0n88" },
+      "category": "productivity",
+      "keywords": ["scratchpad", "capture", "backlog", "ideas", "github-issue", "todo", "research"]
     }
   ]
 }

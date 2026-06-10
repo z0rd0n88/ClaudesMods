@@ -22,6 +22,7 @@ claude marketplace add github:z0rd0n88/ClaudesMods
 | [`multi-agent-developer`](./multi-agent-developer/) | Manager-led TDD dev team (≤4 Opus agents) that debates a spec across RED → GREEN → REFACTOR rounds, synthesizes via an architect agent, materializes a worktree, and verifies via tests. Ships a one-time setup skill for activating the required framework agents. |
 | [`code-rinse-repeat`](./code-rinse-repeat/) | End-to-end spec→APPROVE orchestrator. Composes `multi-agent-developer` (build) with `multi-agent-review` (review-fix loop) into one pipeline so there's no manual handoff between the dev and review phases. |
 | [`baton`](./baton/) | Long-running multi-phase build orchestrator. `baton-runner` queues specs as implement→review→fix units; `baton-runner-multi-agent` uses multi-agent dev teams per phase; `baton-pass` writes append-only session handoff notes. |
+| [`scratchpad`](./scratchpad/) | User-invoked `/scratchpad` capture for a long-running experiment & research backlog (a single GitHub checkbox issue). Smart `##`-section placement, dup-detection, check-off support, configurable target via env / per-project / user-scope config. |
 
 Install any of them with:
 
