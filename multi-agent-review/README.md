@@ -66,10 +66,10 @@ This plugin pairs with the rest of the multi-agent stack:
 
 | Layer | Skill | Where it lives |
 |---|---|---|
-| Spec → code | `xan-multi-agent-developer` | (not yet in ClaudesMods; in author's private config) |
+| Spec → code | `multi-agent-developer` | [sibling plugin in ClaudesMods](https://github.com/z0rd0n88/ClaudesMods/tree/main/multi-agent-developer) |
 | Code → findings | **`multi-agent-review`** | this plugin |
 | Findings → APPROVE on existing PR | **`multi-agent-review-loop`** | this plugin |
-| Spec → APPROVE end-to-end | `code-rinse-repeat` | (not yet in ClaudesMods; composes XMAD + this plugin) |
+| Spec → APPROVE end-to-end | `code-rinse-repeat` | [sibling plugin in ClaudesMods](https://github.com/z0rd0n88/ClaudesMods/tree/main/code-rinse-repeat) |
 | Pattern library for repo-wide review sweeps | [`total-review`](https://github.com/z0rd0n88/ClaudesMods/tree/main/total-review) | sibling plugin in ClaudesMods |
 
 `total-review` and `multi-agent-review` share the same `refs/multi-agent/` primitives. If you install both, the refs are duplicated in each plugin (intentional — each plugin stays self-contained). When you edit a primitive (e.g. the severity budget formula), keep the two copies in sync.

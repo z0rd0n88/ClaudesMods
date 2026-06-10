@@ -19,7 +19,7 @@ The skill itself does not produce findings — it orchestrates agents and relays
 
 ## Shared primitives
 
-This skill is one of three (alongside `total-review` and `xan-multi-agent-developer`) that share these primitives:
+This skill is one of three (alongside `total-review` and `multi-agent-developer`) that share these primitives:
 
 - [`refs/multi-agent/fanout-consolidation.md`](../../refs/multi-agent/fanout-consolidation.md) — the parallel-fan-out contract, dedupe rules, and cross-axis severity budget the synthesizer applies. This skill's §6 brief template and synthesizer step instantiate that ref.
 - [`refs/multi-agent/agent-catalog-lookup.md`](../../refs/multi-agent/agent-catalog-lookup.md) — how `--reviewers <csv>` names resolve to files in the project active catalog and the user-scope parked tier.

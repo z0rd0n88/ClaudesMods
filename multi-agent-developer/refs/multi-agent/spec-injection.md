@@ -1,6 +1,6 @@
 # Spec / requirement injection
 
-Shared primitive for ensuring multi-agent reviewers and developers measure their output against the *originating intent*, not just the diff in isolation. Cited by `total-review`, `multi-agent-review`, `xan-multi-agent-developer`, `baton-runner-multi-agent`.
+Shared primitive for ensuring multi-agent reviewers and developers measure their output against the *originating intent*, not just the diff in isolation. Cited by `total-review`, `multi-agent-review`, `multi-agent-developer`, `baton-runner-multi-agent`.
 
 ## The failure this prevents
 
@@ -34,7 +34,7 @@ This makes "you built the wrong thing" a first-class finding category rather tha
 | Skill | How to inject |
 |---|---|
 | `multi-agent-review` | Pass spec path via `--prompt-prelude <path>`. The skill already prepends prelude contents to every reviewer brief — this is the right hook; no schema change needed. |
-| `xan-multi-agent-developer` | The spec IS the target (positional arg `file <path>` or `issue <N>`); already injected into specialist briefs. Verify the brief template carries it under the canonical heading rather than paraphrasing. |
+| `multi-agent-developer` | The spec IS the target (positional arg `file <path>` or `issue <N>`); already injected into specialist briefs. Verify the brief template carries it under the canonical heading rather than paraphrasing. |
 | `total-review` | For `pre-pr` mode, accept an optional `--spec <path>` argument; for recurring full-codebase modes (`code`, `architecture`, etc.), spec injection is N/A — those don't have a single originating spec. |
 | `baton-runner-multi-agent` | Each phase has its own spec (from the phase list parsed at pre-flight). The review-unit invocation of `multi-agent-review` MUST pass `--prompt-prelude <phase-spec-path>` so the per-phase reviewers measure against that phase's acceptance criteria, not the cumulative diff. |
 

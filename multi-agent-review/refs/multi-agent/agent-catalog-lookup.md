@@ -1,6 +1,6 @@
 # Agent catalog lookup
 
-Shared primitive for any multi-agent skill that picks specialists from the project's active agents plus the user-scoped parked catalog. Cited by `total-review`, `multi-agent-review`, `xan-multi-agent-developer`.
+Shared primitive for any multi-agent skill that picks specialists from the project's active agents plus the user-scoped parked catalog. Cited by `total-review`, `multi-agent-review`, `multi-agent-developer`.
 
 ## The two catalogs
 

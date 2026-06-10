@@ -1,6 +1,6 @@
 # Parallel fan-out and consolidation
 
-Shared primitive for any skill that runs N reviewer/specialist agents in parallel and merges their reports. Cited by `total-review`, `multi-agent-review`, `xan-multi-agent-developer`.
+Shared primitive for any skill that runs N reviewer/specialist agents in parallel and merges their reports. Cited by `total-review`, `multi-agent-review`, `multi-agent-developer`.
 
 ## Fan-out contract
 

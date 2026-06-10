@@ -240,4 +240,4 @@ Additionally:
 ## 8. Composition with other skills
 
 - **Inside this loop, the coordinator MAY use** `tdd`, `diagnose`, language-specific reviewers (`kotlin-review`, `python-review`, …), or project-specific skills when applying fixes. Using `multi-agent-review` itself outside the loop's subagent dispatch is fine for a one-off sanity check after a controversial fix.
-- **This skill MUST NOT be invoked from inside another loop skill** (e.g. `baton-runner`, `xan-multi-agent-developer`). Nested loops create non-deterministic finish conditions and exponential agent fan-out.
+- **This skill MUST NOT be invoked from inside another loop skill** (e.g. `baton-runner`, `multi-agent-developer`). Nested loops create non-deterministic finish conditions and exponential agent fan-out.
