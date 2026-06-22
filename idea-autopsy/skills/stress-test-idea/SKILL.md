@@ -1,13 +1,23 @@
 ---
 name: stress-test-idea
-description: Subject an idea doc, proposal, pitch deck, or early concept brief to brutal adversarial review by running two independent reviewers in parallel — a thinking-skills battery applying four mental-model frameworks (jobs-to-be-done, fermi-estimation, pre-mortem, steel-manning) and a devils-advocate adversarial critique — then synthesize their findings into a prioritized list of changes for v2. Use this skill whenever the user wants to harden, improve, stress-test, or get adversarial feedback on a doc they intend to revise — including phrases like "tear this apart", "stress test this idea", "what should I fix", "make this stronger", "find the holes", "critique loop", or any request for harsh feedback that will inform a doc rewrite rather than a go/no-go decision.
+description: Subject an idea doc, proposal, pitch deck, or early concept brief to brutal adversarial review by running three complementary-lens reviewers in parallel — a thinking-skills battery (jobs-to-be-done, fermi-estimation, pre-mortem, graded steel-manning), a devils-advocate dimension critique, and a silent-failure lens hunting unspoken assumptions — then synthesizing their findings into a prioritized list of changes for v2. Use whenever the user wants to harden, improve, stress-test, or get adversarial feedback on a doc they intend to revise — including phrases like "tear this apart", "stress test this idea", "what should I fix", "make this stronger", "find the holes", "critique loop", or any request for harsh feedback that will inform a doc rewrite rather than a go/no-go decision. Scope is product/business proposals; other doc types produce uneven output.
 ---
 
 # Stress Test Idea
 
-Run two independent reviewers in parallel against an idea doc, then synthesize their findings into a concrete list of changes for v2. The architecture is designed to produce *iteration input*, not a verdict — the loop is meant to be re-run after the user rewrites the doc.
+Run three reviewers with complementary lenses in parallel against an idea doc, then synthesize their findings into a concrete list of changes for v2. The architecture is designed to produce *iteration input*, not a verdict — the loop is meant to be re-run after the user rewrites the doc.
 
 This skill exists for the doc-improvement use case: the user is still shaping an idea and wants the sharpest possible adversarial feedback before committing. It is the complement to `evaluate-proposal-harsh`, which is for the go/no-go decision use case.
+
+## Scope
+
+Designed for **product and business proposals** — pitches, decks, project briefs, one-pagers, business memos. The lenses (jobs-to-be-done, market math, business-model PASS/FAIL, distribution, etc.) assume a doc that proposes something to build and ship to users.
+
+For research proposals, internal architecture specs, OSS roadmaps, or creative-project briefs the lenses will produce uneven findings ("Doc has no TAM. Critical." on a research grant proposal is nonsense). If the doc is non-business, declare it at invocation (e.g., "this is an internal arch RFC, skip the market lens") so the reviewers can downweight the irrelevant axes — or use a different review tool.
+
+## Confidentiality
+
+Each reviewer is dispatched as a subagent via the Task tool with the **full document text in its prompt**. With three reviewers, the doc is replicated three times across subagent transcripts. For confidential pitch decks, unannounced fundraising material, or anything with cap-table details, excerpt or anonymize before running. Mention this to the user once if the doc appears sensitive.
 
 ## When to use this vs. evaluate-proposal-harsh
 
@@ -16,7 +26,7 @@ This skill exists for the doc-improvement use case: the user is still shaping an
 | Doc is early or in iteration | Doc is mostly final |
 | User wants "what to fix" | User wants "should I do this at all" |
 | User signals revision intent | User signals decision intent |
-| Output should feed v2 of the doc | Output should drive an invest/skip call |
+| Output should feed v2 of the doc | Output should drive an invest/skip/pivot call |
 
 If both skills could apply, default to `evaluate-proposal-harsh` for verdict-shaped questions and this skill for everything else.
 
@@ -43,6 +53,7 @@ Optional, inline: context that grounds the review. Examples:
 - "I'm a solo founder with 4 months of runway"
 - "Target market is institutional crypto traders"
 - "I already know I'm going to ship something — help me pick the right shape"
+- `--slug <name>` to override the auto-derived state-directory name
 
 Do not ask follow-up questions before running. If the user gave you a doc, dispatch the reviewers. If context is missing, the reviewers fall back to generic assumptions.
 
@@ -50,11 +61,32 @@ If the user described an idea only verbally without a doc, ask once for a doc, b
 
 ## Workflow
 
-Three phases: read, dispatch two reviewers in parallel, synthesize. The parallelism is load-bearing — Reviewer A and Reviewer B must not see each other's work or the independence property collapses.
+Five phases: slug-and-state, read-and-size-check, dispatch three reviewers in parallel, synthesize, write output to state.
 
-### Step 1 — Read the document
+### Step 0 — Determine slug and ensure state directory
 
-Read the full document. Note in working memory (do not show the user):
+Derive a slug:
+- If the doc came in as a file path: slug = basename without extension (e.g., `./pitch.md` → `pitch`).
+- If the doc was pasted: slug = a 2–3-word kebab-case extraction from the title or first line (e.g., "Pivot to enterprise audit" → `pivot-enterprise-audit`).
+- If `--slug` was provided, honor it verbatim.
+
+Ensure `./.autopsy/<slug>/` exists (create if missing). Determine the version label:
+- If `./.autopsy/<slug>/state.json` does not exist → this is `v1`.
+- If state.json exists, read its `current_version`. If the user appears to be running a fresh stress-test on a rewritten doc, increment (`v1` → `v2`, etc.); otherwise reuse the current version label and overwrite.
+
+Copy the original doc to `./.autopsy/<slug>/v<N>.md` (snapshot) if no snapshot for this version exists.
+
+### Step 1 — Read the document and size-check
+
+Read the full document. Count words. Apply the doc-size guard:
+
+| Word count | Action |
+|---|---|
+| < 5000 | Proceed normally with all three reviewers |
+| 5000 – 15000 | Warn the user once: "doc is N words; reviewer cost will be substantial. Proceed with all three reviewers, or reduce to two (A + B)?" Default to all three if no answer in the next message |
+| > 15000 | Refuse: ask for an excerpt (the load-bearing sections only) or run chapter-by-chapter |
+
+Note in working memory (do not show the user):
 - Central thesis
 - Target user or market
 - Stated scope
@@ -63,15 +95,36 @@ Read the full document. Note in working memory (do not show the user):
 
 Do not summarize the doc back. The user wrote it.
 
-### Step 2 — Dispatch Reviewer A and Reviewer B in parallel
+### Step 2 — Dispatch Reviewer A, B, and C in parallel
 
-Use the Task tool to spawn two subagents in a single message. Each gets the full document, the optional context, and its specific instructions from the next section. Each must produce findings independently.
+Use the Task tool to spawn three subagents in a single message. Each gets the full document, the optional context, and its specific instructions from the next section.
 
-Sequential dispatch defeats the architecture — the second reviewer would anchor to the first reviewer's findings (which it would see in context) instead of reasoning fresh.
+**Parallelism is load-bearing for one reason:** parallel dispatch prevents one reviewer from anchoring on another's findings (which it would otherwise see in the parent context). It does **not** produce statistical independence — all three reviewers share the parent's framing, the same model, and the same investment context. The product is **complementary lenses on the same doc**, not three independent reasoners. The synthesizer compensates by weighting cross-lens agreement (the "Consensus" bucket) more heavily than any single reviewer's enthusiasm.
+
+Sequential dispatch breaks even this weaker property — later reviewers anchor to earlier findings instead of reasoning fresh.
 
 ### Step 3 — Synthesize using the consensus/unique/contradictions structure
 
-Once both reviewers return, classify every finding into one of four buckets, then write iteration recommendations. The classification matters more than the individual findings — consensus findings are highest-confidence problems, contradictions are where the most genuine uncertainty lives.
+Once all three reviewers return, classify every finding into one of four buckets, then write iteration recommendations. The classification matters more than the individual findings — consensus findings are highest-confidence problems, contradictions are where the most genuine uncertainty lives.
+
+### Step 4 — Write output to state
+
+Write the rendered synthesis to `./.autopsy/<slug>/v<N>-stress-test.md`. Update `state.json` with the new artifact and an entry in `history` (timestamp, skill, version). State.json schema:
+
+```json
+{
+  "slug": "<slug>",
+  "doc_path": "<original path or 'pasted'>",
+  "current_version": "v1",
+  "artifacts": {
+    "v1": "./.autopsy/<slug>/v1.md",
+    "v1-stress-test": "./.autopsy/<slug>/v1-stress-test.md"
+  },
+  "history": [
+    { "ts": "<ISO8601>", "skill": "stress-test-idea", "version": "v1", "output": "v1-stress-test.md" }
+  ]
+}
+```
 
 ## Reviewer specifications
 
@@ -80,7 +133,9 @@ Once both reviewers return, classify every finding into one of four buckets, the
 Dispatch this Task with the following prompt:
 
 ```
-You are Reviewer A in a parallel adversarial review of an idea doc. Your job is to apply four mental-model frameworks in sequence and return graded findings from each. You will not see Reviewer B's work. Reviewer B will not see yours. Independence is the whole point.
+You are Reviewer A in a parallel adversarial review of an idea doc. Your job is to apply four mental-model frameworks in sequence and return graded findings from each. You will not see Reviewer B or C's work. They will not see yours. Parallel dispatch is what makes the synthesis meaningful — do not narrate what other reviewers might say.
+
+INTEGRATION HINT: if the Skill tool is available and any of `thinking-skills:thinking-jobs-to-be-done`, `thinking-skills:thinking-fermi-estimation`, `thinking-skills:thinking-pre-mortem`, or `thinking-skills:thinking-steel-manning` are installed, invoke the relevant one before applying each framework — that grounds the reasoning in the canonical pattern. Otherwise, apply the patterns inline as described below.
 
 The document follows. Read it carefully.
 
@@ -110,7 +165,11 @@ Frameworks:
    Assume it is 18 months from now and this idea, built as described, has failed completely. List the three most likely causes of death, ranked by probability. For each, check what the doc currently says (if anything) about preventing or mitigating that failure mode. If a likely failure mode is unaddressed in the doc, that is a finding.
 
 4. STEEL-MANNING
-   Construct the strongest, most intellectually honest argument that this idea should NOT be built — written as if by someone who deeply understands the space and genuinely believes the founder is wrong. If you cannot construct a strong opposing argument, either the idea is truly robust (note this) or you have not looked hard enough (try again before concluding the former).
+   Construct the strongest, most intellectually honest argument that this idea should NOT be built — written as if by someone who deeply understands the space and genuinely believes the founder is wrong. Then GRADE the strength of that argument on this rubric:
+   - **Critical** — opposing case is structurally devastating; the doc cannot survive without restating the central thesis.
+   - **High** — opposing case is strong; v2 must explicitly address it with evidence, not hand-waving.
+   - **Medium** — opposing case has merit; worth a paragraph in v2.
+   - **None** — no strong opposing argument exists. If you grade None, you must defend WHY no strong case exists; "I couldn't think of one" does not qualify.
 
 Output format:
 
@@ -125,7 +184,9 @@ Output format:
 (same format)
 
 ## Steel-manning
-(one paragraph stating the strongest opposing argument; or a note that no strong opposing argument exists, with a brief defense of why)
+- **[Severity tag: Critical | High | Medium | None]** one-sentence summary of the opposing case
+  *Argument:* one paragraph constructing the opposing case
+  *Why it grades [Severity]:* one sentence on what the argument exposes (or why no strong case exists)
 
 Rules:
 - Be specific. "The market section is weak" is not a finding.
@@ -137,12 +198,14 @@ Rules:
 Return only the four-section output. No preamble, no conclusion.
 ```
 
-### Reviewer B — Devils-advocate critique
+### Reviewer B — Devils-advocate dimension critique
 
 Dispatch this Task with the following prompt:
 
 ```
-You are Reviewer B in a parallel adversarial review of an idea doc. Your job is to apply binary pass/fail adversarial critique across the dimensions that matter for a new project. You will not see Reviewer A's work. Reviewer A will not see yours.
+You are Reviewer B in a parallel adversarial review of an idea doc. Your job is to apply binary pass/fail adversarial critique across the dimensions that matter for a new project. You will not see Reviewer A or C's work. They will not see yours.
+
+INTEGRATION HINT: if the Skill tool is available and `thinking-skills:thinking-red-team` or a `devils-advocate` skill is installed, invoke it first to ground the adversarial posture, then apply the dimensions below. Otherwise reason inline.
 
 The document follows.
 
@@ -189,27 +252,104 @@ Rules:
 Return only the table plus Fix: suggestions. No preamble, no conclusion.
 ```
 
+### Reviewer C — Silent-failure lens
+
+Dispatch this Task with the following prompt:
+
+```
+You are Reviewer C in a parallel adversarial review of an idea doc. Your job is to hunt for what is NOT in the doc — the silent failures, the unspoken assumptions, the load-bearing optimism the reader is asked to supply. You will not see Reviewer A or B's work. They will not see yours.
+
+INTEGRATION HINT: if the Skill tool is available and `thinking-skills:thinking-map-territory` or `thinking-skills:thinking-five-whys-plus` are installed, invoke one of them first to sharpen the "what's the doc not saying" lens. Otherwise reason inline.
+
+The document follows.
+
+---
+[full document text]
+---
+
+Investment context (may be empty):
+[user-supplied context, or "none provided"]
+
+Apply the silent-failure lens. For each of the following questions, produce 1–2 graded findings (Critical / High / Medium severity). If the lens genuinely finds nothing in a category, note it and skip — do not pad.
+
+Questions:
+
+1. WHERE WILL THIS FAIL SILENTLY?
+   What failures would not be visible for weeks or months — degrading user trust, churn, fraud, support load, compliance drift — and which of those does the doc fail to instrument or detect?
+
+2. WHAT IS THE DOC COMPLETELY SILENT ON?
+   Walk through the operational reality of running this once it's live: regulatory ongoing duties, support, infra scaling beyond v1, migration paths, off-ramps for users who churn, talent retention. Each absence is a candidate finding. The most damning are the absences the doc seems unaware of (vs. acknowledged-but-deferred).
+
+3. WHERE DOES THE DOC REQUIRE OPTIMISM TO FILL A GAP?
+   Find the sentences where the reader has to mentally fill in "and then a miracle happens." Common shapes: "this scales because…" (no mechanism), "users will adopt…" (no acquisition story), "we'll iterate…" (no iteration capacity).
+
+4. WHAT IS THE DOC'S LOAD-BEARING ASSUMPTION THAT IS NEVER NAMED?
+   The most dangerous assumptions are the ones the doc doesn't realize it's making. Identify one — the single assumption that, if false, makes the whole proposal collapse, and which the doc never explicitly states.
+
+Output format:
+
+## Silent failures
+- **[Severity]** Statement of the silent failure.
+  *Evidence:* one sentence pointing to a specific absence or a specific line where instrumentation is missing.
+
+## What the doc is silent on
+(same format)
+
+## Optimism gaps
+(same format)
+
+## Unnamed load-bearing assumption
+- **[Severity]** One sentence naming the assumption.
+  *Why it's load-bearing:* one sentence on what breaks if the assumption is false.
+
+Rules:
+- The product of this lens is ABSENCES. "The doc claims X but provides no evidence" is fine but it's not the focus — Reviewer A and B do that. Your focus is "the doc never even thinks to address X."
+- Be specific. "The doc is silent on operations" is too vague. "The doc never names who handles a support ticket" is a finding.
+- Do not invent absences the doc actually addresses elsewhere. Read carefully before concluding silence.
+- Do not produce a verdict.
+
+Return only the four-section output. No preamble.
+```
+
+## Framework ↔ dimension mapping (synthesis aid)
+
+The three reviewers' lenses overlap in predictable ways. Use this mapping to identify Consensus quickly during synthesis:
+
+| Reviewer A framework | Reviewer B dimension(s) | Reviewer C area |
+|---|---|---|
+| Jobs-to-be-done | Problem reality, Solution differentiation | (sometimes) Unnamed load-bearing assumption |
+| Fermi estimation | Business model | Optimism gaps (when numbers are aspirational) |
+| Pre-mortem | Execution risk, Regulatory/legal | Silent failures, What the doc is silent on |
+| Steel-manning | Hidden assumptions (general) | Unnamed load-bearing assumption |
+| (Reviewer C native) | (Reviewer C native) | All four C-buckets |
+
+A finding in Reviewer A's pre-mortem + Reviewer B's "Execution risk" FAIL + Reviewer C's "What the doc is silent on" = the strongest possible Consensus finding. A finding in Reviewer A only with no overlap is a Unique-A finding, judged for "real or reaching" during synthesis.
+
 ## Synthesis rules
 
-After both reviewers return, classify every finding into one of these buckets and produce the output.
+After all three reviewers return, classify every finding into one of these buckets and produce the output.
 
 ### Bucket 1 — Consensus
 
-Findings where both reviewers flagged the same underlying issue (even if they framed it differently). These are the highest-confidence weaknesses. Two independent reasoners landing on the same problem is strong signal.
+Findings where two or more reviewers flagged the same underlying issue (even if they framed it differently). These are the highest-confidence weaknesses. Use the framework↔dimension mapping above to spot them mechanically.
 
-Example: Reviewer A's pre-mortem identifies "regulatory approval is the most likely cause of death" while Reviewer B fails the "Regulatory / legal exposure" dimension as Critical. Same finding, different angles. Bucket: Consensus, Critical.
+Severity for a Consensus finding = the highest severity any contributing reviewer assigned.
+
+Example: Reviewer A's pre-mortem identifies "regulatory approval is the most likely cause of death" (Critical) while Reviewer B fails the "Regulatory / legal exposure" dimension as High, and Reviewer C flags "doc is silent on which regulator approves what" (Medium). Same finding, three angles. Bucket: Consensus, Critical (highest contributor wins).
 
 ### Bucket 2 — Unique to one reviewer
 
-Findings that only one reviewer surfaced. For each, judge whether the other reviewer missed it (real finding, the other lens was blind to it) or whether the one that raised it was reaching (likely false positive). Include unique findings that look real; drop the reaches.
+Findings only one reviewer surfaced. For each, judge whether the other reviewers missed it (real finding, the other lenses were blind to it) or whether the one that raised it was reaching (likely false positive). Include unique findings that look real, marked `(real)`; mark reaches `(likely reach)` and drop them from iteration recommendations.
+
+The `(real)` vs `(likely reach)` annotation matters — `iterate-to-v2`'s default acceptance rule uses it.
 
 ### Bucket 3 — Contradictions
 
-Places where the two reviewers explicitly disagreed about the same dimension — e.g., Reviewer A's jobs-to-be-done passes the segment but Reviewer B fails "Problem reality." These are the most interesting findings because they expose genuinely uncertain assumptions. The synthesis should call out the contradiction explicitly, not paper over it.
+Places where two reviewers explicitly disagreed about the same dimension — e.g., Reviewer A's jobs-to-be-done passes the segment but Reviewer B fails "Problem reality." These are the most interesting findings because they expose genuinely uncertain assumptions. The synthesis should call out the contradiction explicitly, not paper over it.
 
-### Bucket 4 — What neither caught (speculative)
+### Bucket 4 — What none caught (speculative)
 
-Optional. If, after seeing both reviews, you can identify an obvious weakness neither reviewer surfaced, list it briefly. Do not invent issues to fill this section — leave it empty if both reviews were thorough.
+Optional. If, after seeing all three reviews, you can identify an obvious weakness none surfaced, list it briefly. Do not invent issues to fill this section — leave it empty if all three reviews were thorough.
 
 ### Iteration recommendations
 
@@ -227,7 +367,9 @@ Cap at the top 5 recommendations. If the user wants more, they can ask. A founde
 Use this exact structure. Do not add sections, do not change headings.
 
 ```markdown
-# Stress test: [doc title or filename]
+# Stress test: [doc title or filename] (v[N])
+
+State: `./.autopsy/[slug]/v[N]-stress-test.md`
 
 ## Reviewer A (thinking-skills battery)
 
@@ -237,36 +379,44 @@ Use this exact structure. Do not add sections, do not change headings.
 
 (Reviewer B's verbatim output)
 
+## Reviewer C (silent-failure lens)
+
+(Reviewer C's verbatim output)
+
 ---
 
 ## Synthesis
 
-### Consensus findings (both reviewers flagged)
+### Consensus findings (two or more reviewers flagged)
 
 - **[Severity]** Finding statement.
-  *Sources:* Reviewer A's [framework] and Reviewer B's [dimension].
+  *Sources:* Reviewer A's [framework] + Reviewer B's [dimension] + Reviewer C's [area] (drop any non-contributors).
   *Why this matters:* one sentence on the implication.
 
 (repeat for each consensus finding)
 
-### Unique to Reviewer A
+### Unique to Reviewer A `(real)` / `(likely reach)`
 
 - **[Severity]** Finding statement.
   *Source:* Reviewer A's [framework].
-  *Assessment:* one sentence on whether B plausibly missed it.
+  *Assessment:* one sentence on whether B/C plausibly missed it. End with `(real)` or `(likely reach)`.
 
 ### Unique to Reviewer B
 
 (same format)
 
+### Unique to Reviewer C
+
+(same format)
+
 ### Contradictions
 
-- **[Topic]** Reviewer A says X; Reviewer B says Y.
+- **[Topic]** Reviewer X says A; Reviewer Y says B.
   *What this reveals:* one sentence on the underlying assumption that is unresolved.
 
-### What neither caught
+### What none caught
 
-(Either a brief list of speculative additions, or "Both reviews were thorough; no obvious additions.")
+(Either a brief list of speculative additions, or "All three reviews were thorough; no obvious additions.")
 
 ---
 
@@ -277,6 +427,12 @@ Use this exact structure. Do not add sections, do not change headings.
    *Impact:* resolves N findings; X is the highest-severity one.
 
 (repeat for up to 5 recommendations, sorted by impact)
+
+---
+
+## Next step
+
+Run `iterate-to-v2` with this critique to produce a section-by-section change plan, or rewrite directly and re-invoke `stress-test-idea` on v2 once it's drafted. The full state is in `./.autopsy/[slug]/`.
 ```
 
 ## Examples
@@ -284,35 +440,38 @@ Use this exact structure. Do not add sections, do not change headings.
 **Consensus finding — good**
 
 > **[Critical]** No evidence that target users will pay at the claimed price.
-> *Sources:* Reviewer A's jobs-to-be-done (segment cannot articulate the displacement) and Reviewer B's "Business model" FAIL.
+> *Sources:* Reviewer A's jobs-to-be-done (segment cannot articulate the displacement), Reviewer B's "Business model" FAIL, Reviewer C's "Unnamed load-bearing assumption" (doc assumes WTP without testing).
 > *Why this matters:* the unit economics depend on the price point; if users won't pay it, every downstream number is wrong.
 
 **Contradiction — good**
 
-> **[Distribution]** Reviewer A's jobs-to-be-done assumes target users will discover the product through community channels; Reviewer B's "Distribution path" fails because no community presence exists yet.
+> **[Distribution]** Reviewer A's jobs-to-be-done assumes target users will discover the product through community channels; Reviewer B's "Distribution path" fails because no community presence exists yet; Reviewer C is silent.
 > *What this reveals:* the doc is quietly assuming organic distribution that the founder has not yet built and may not be able to build. This is the load-bearing assumption to test next.
 
 **Iteration recommendation — good**
 
 > 1. **Replace the TAM section with a bottom-up market sizing tied to a specific beachhead segment** — pick the smallest segment the doc names, estimate addressable users in that segment, conversion rate, and ARPU.
->    *Addresses:* Consensus finding ([Critical] TAM unsupported), Unique to A (fermi mismatch), Unique to B ("Business model" FAIL).
+>    *Addresses:* Consensus finding ([Critical] TAM unsupported), Unique to A `(real)` (fermi mismatch), Unique to B (`Business model` FAIL).
 >    *Impact:* resolves 3 findings, including 1 Critical.
 
 ## Edge cases
 
-- **Document is too thin (under ~500 words or no concrete claims/numbers):** both reviewers will return mostly Critical findings about missing substance. Output the reviews normally, but in iteration recommendations, the top item is "expand the doc with concrete claims and numbers before iterating further." Do not pretend a thin doc can be meaningfully improved by addressing axis findings.
+- **Document is too thin (under ~500 words or no concrete claims/numbers):** all three reviewers will return mostly Critical findings about missing substance. Output the reviews normally, but in iteration recommendations, the top item is "expand the doc with concrete claims and numbers before iterating further." Do not pretend a thin doc can be meaningfully improved by addressing axis findings.
 
-- **Reviewers strongly agree on everything (no contradictions):** that is itself a signal worth flagging at the bottom of synthesis ("no contradictions between reviewers — this idea is either robustly weak or the two lenses are not separating it well"). Consider whether running a third reviewer with a different lens would help; do not run it automatically.
+- **Reviewers strongly agree on everything (no contradictions):** that is itself a signal worth flagging at the bottom of synthesis ("no contradictions between reviewers — this idea is either robustly weak or the three lenses are not separating it well"). With three reviewers and zero contradictions you should be more suspicious than with two — convergence may indicate shared blind spots, not robustness.
 
 - **Reviewers strongly disagree on most things (lots of contradictions):** flag this prominently. Mostly-contradictions usually means the doc is so vague that reviewers are reading different ideas into it. Recommendation: tighten the doc's claims before another stress-test pass.
 
-- **No cc-thinking-skills or devils-advocate plugins installed:** the reasoning patterns are baked into the reviewer prompts, so the skill works either way. The plugins, if present, sharpen the underlying reasoning but are not required.
+- **`thinking-skills` plugin not installed:** the integration hints in each reviewer prompt are soft — reviewers reason inline if the skills aren't available. The output quality difference is real but not blocking.
+
+- **Doc > 15000 words:** refuse and ask for an excerpt. The cost and signal-to-noise ratio degrades badly past that point.
 
 - **User asks for encouragement or balance mid-flow:** politely note that this skill is built to surface weaknesses for iteration; for a balanced review they want a different approach. Do not soften synthesis.
 
 ## What not to do
 
-- Do not run the reviewers sequentially. Parallel dispatch is the architecture; sequential breaks independence.
+- Do not run the reviewers sequentially. Parallel dispatch is the architecture; sequential breaks the no-anchoring property.
+- Do not claim the reviewers are "independent" — they share the parent's framing and the model. They have **complementary lenses**.
 - Do not include a "Strengths" section. The user is iterating; positives don't change v2.
 - Do not produce an invest/skip verdict. That is `evaluate-proposal-harsh`'s job. This skill ends in iteration recommendations.
 - Do not exceed 5 iteration recommendations. Founders rewriting a doc cannot address more than that in one revision.
@@ -320,3 +479,4 @@ Use this exact structure. Do not add sections, do not change headings.
 - Do not pad findings to look thorough. If a reviewer returned 3 findings, that's the right number.
 - Do not summarize the doc to the user before the review.
 - Do not soften synthesis language to match the user's apparent emotional state. Harshness is the product.
+- Do not skip writing to `./.autopsy/<slug>/`. The state file IS the loop closure; without it the user has to clipboard-shuttle between skills.
