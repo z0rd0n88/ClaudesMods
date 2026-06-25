@@ -87,8 +87,15 @@ The combination produces an auditable loop on disk: critique → change-plan →
 ### Via the ClaudesMods marketplace (recommended)
 
 ```bash
-claude marketplace add github:z0rd0n88/ClaudesMods
-claude plugin install idea-autopsy
+claude plugin marketplace add z0rd0n88/ClaudesMods
+claude plugin install idea-autopsy@claudes-mods
+```
+
+To upgrade after a new release:
+
+```bash
+claude plugin marketplace update claudes-mods
+claude plugin update idea-autopsy@claudes-mods
 ```
 
 ### Standalone (local clone)
@@ -127,6 +134,18 @@ Or just trigger the underlying skill by language:
 > (evaluate-proposal-harsh runs)
 ```
 
+## Examples
+
+Three worked examples ship with the plugin, one per main verdict path. Each has the input doc, illustrative outputs at each stage, and a `WALKTHROUGH.md` narrating what happened and why.
+
+| Example | Verdict | Showcases |
+|---|---|---|
+| [`examples/consumer-app-pitch/`](./examples/consumer-app-pitch/) | **Proceed with caution** | Full three-skill loop end-to-end. Change-vs-hedge enforcement, bucket-aware acceptance, measurable flip-condition. |
+| [`examples/b2b-saas-pivot/`](./examples/b2b-saas-pivot/) | **Pivot** | Strong team / wrong thesis pattern. New v1.1 Pivot verdict with two concrete alternative theses. |
+| [`examples/unsupported-tam-skip/`](./examples/unsupported-tam-skip/) | **Skip** (no flip) | 4/4-axis Critical, structurally-broken proposal. "No plausible flip-condition exists" output. |
+
+Start with [`examples/consumer-app-pitch/`](./examples/consumer-app-pitch/WALKTHROUGH.md) for the full loop; the others are short reads showcasing the verdict variety. See [`examples/README.md`](./examples/README.md) for an index.
+
 ## Layout
 
 ```
@@ -135,6 +154,11 @@ idea-autopsy/
 ├── README.md                     # this file
 ├── commands/
 │   └── autopsy.md                # /autopsy router with --loop/--status/--reset
+├── examples/                     # three worked examples (one per verdict path)
+│   ├── README.md
+│   ├── consumer-app-pitch/       # full loop → Proceed with caution
+│   ├── b2b-saas-pivot/           # → Pivot
+│   └── unsupported-tam-skip/     # → Skip (no plausible flip)
 ├── scripts/
 │   ├── check-drift.py            # mirror-sync check (maintainers)
 │   └── README.md

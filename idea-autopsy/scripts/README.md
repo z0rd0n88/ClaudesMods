@@ -10,7 +10,7 @@ Compares the source tree (this repo's `idea-autopsy/`) against an installed copy
 python3 scripts/check-drift.py <install-path>
 ```
 
-The script compares only the load-bearing surface — `.claude-plugin/plugin.json`, `commands/`, and `skills/` — and ignores source-only docs (README.md) and install wrapper files (marketplace.json, outer README). Line endings are LF-normalized before hashing.
+The script compares the load-bearing surface — `.claude-plugin/plugin.json`, `commands/`, `skills/`, and `examples/` — and ignores source-only docs (README.md) and install wrapper files (marketplace.json, outer README). Line endings are LF-normalized before hashing.
 
 Exit codes:
 - `0` — source and install match

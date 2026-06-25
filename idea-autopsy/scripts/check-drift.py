@@ -28,6 +28,7 @@ TRACKED_SUBPATHS = (
     ".claude-plugin/plugin.json",
     "commands",
     "skills",
+    "examples",
 )
 
 # Path fragments to ignore inside the tracked subdirectories.
