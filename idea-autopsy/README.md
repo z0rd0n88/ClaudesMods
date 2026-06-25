@@ -87,8 +87,15 @@ The combination produces an auditable loop on disk: critique → change-plan →
 ### Via the ClaudesMods marketplace (recommended)
 
 ```bash
-claude marketplace add github:z0rd0n88/ClaudesMods
-claude plugin install idea-autopsy
+claude plugin marketplace add z0rd0n88/ClaudesMods
+claude plugin install idea-autopsy@claudes-mods
+```
+
+To upgrade after a new release:
+
+```bash
+claude plugin marketplace update claudes-mods
+claude plugin update idea-autopsy@claudes-mods
 ```
 
 ### Standalone (local clone)
