@@ -26,3 +26,9 @@ node_modules/
 
 # Memsearch plugin cache (per ~/.claude convention)
 .memsearch/
+
+# Devil's Advocate critique working artifacts (local review logs)
+.devils-advocate/
+
+# Local git worktrees
+.worktrees/

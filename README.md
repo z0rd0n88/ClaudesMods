@@ -23,6 +23,7 @@ claude marketplace add github:z0rd0n88/ClaudesMods
 | [`code-rinse-repeat`](./code-rinse-repeat/) | End-to-end spec→APPROVE orchestrator. Composes `multi-agent-developer` (build) with `multi-agent-review` (review-fix loop) into one pipeline so there's no manual handoff between the dev and review phases. |
 | [`baton`](./baton/) | Long-running multi-phase build orchestrator. `baton-runner` queues specs as implement→review→fix units; `baton-runner-multi-agent` uses multi-agent dev teams per phase; `baton-pass` writes append-only session handoff notes. |
 | [`scratchpad`](./scratchpad/) | User-invoked `/scratchpad` capture for a long-running experiment & research backlog (a single GitHub checkbox issue). Smart `##`-section placement, dup-detection, check-off support, configurable target via env / per-project / user-scope config. |
+| [`idea-panel`](./idea-panel/) | Parallel panel of thinking-skills mental-model lenses generates candidate ideas for a topic, then a synthesizer ranks and dedupes them into one shortlist. Generative sibling of `multi-agent-review`. |
 
 Install any of them with:
 
