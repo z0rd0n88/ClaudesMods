@@ -19,6 +19,8 @@ For research proposals, internal architecture specs, OSS roadmaps, or creative-p
 
 Each reviewer is dispatched as a subagent via the Task tool with the **full document text in its prompt**. With three reviewers, the doc is replicated three times across subagent transcripts. For confidential pitch decks, unannounced fundraising material, or anything with cap-table details, excerpt or anonymize before running. Mention this to the user once if the doc appears sensitive.
 
+The internal verification pass (Step 2.5) adds one subagent that receives the findings plus the document — same closed-world profile, no external calls. **`--verify-claims` is different:** it sends extracted factual claims to web search via a bundled research agent. It is OFF by default and must not be used on confidential or unannounced material — treat enabling it as publishing those claims to a third-party search service.
+
 ## When to use this vs. evaluate-proposal-harsh
 
 | Use this skill (`stress-test-idea`) when | Use `evaluate-proposal-harsh` when |
@@ -54,6 +56,7 @@ Optional, inline: context that grounds the review. Examples:
 - "Target market is institutional crypto traders"
 - "I already know I'm going to ship something — help me pick the right shape"
 - `--slug <name>` to override the auto-derived state-directory name
+- `--verify-claims` (optional) to also fact-check the doc's *external* claims against the web; OFF by default (see Confidentiality). The internal doc-support verification pass always runs.
 
 Do not ask follow-up questions before running. If the user gave you a doc, dispatch the reviewers. If context is missing, the reviewers fall back to generic assumptions.
 
@@ -61,7 +64,7 @@ If the user described an idea only verbally without a doc, ask once for a doc, b
 
 ## Workflow
 
-Five phases: slug-and-state, read-and-size-check, dispatch three reviewers in parallel, synthesize, write output to state.
+Six phases: slug-and-state, read-and-size-check, dispatch three reviewers in parallel, verify high-severity findings (independent pass), synthesize, write output to state.
 
 ### Step 0 — Determine slug and ensure state directory
 
@@ -103,6 +106,27 @@ Use the Task tool to spawn three subagents in a single message. Each gets the fu
 
 Sequential dispatch breaks even this weaker property — later reviewers anchor to earlier findings instead of reasoning fresh.
 
+### Step 2.5 — Verify high-severity findings (independent pass)
+
+Reviewer findings drive the iteration recommendations, and a confident-but-unsupported one wastes a rewrite. Before synthesis, check every **Critical and High** finding against the document with an *independent* verifier that did not produce it.
+
+Dispatch ONE fresh `general-purpose` subagent via the Task tool (no web needed — this is a doc-support check). Give it ONLY the full document text and the Critical/High findings verbatim — not the reviewers' reasoning (independence is the point). Its instructions:
+
+> For each finding, decide one verdict, defaulting to REFUTE or NEEDS-EVIDENCE when the document does not clearly support it:
+> - **CONFIRM** — the document supports it; quote the exact sentence or number.
+> - **REFUTE** — it misreads the doc, or the doc actually addresses the thing it calls missing; quote the contradicting text.
+> - **NEEDS-EVIDENCE** — it rests on an outside-world claim (an industry rate, a competitor's revenue) the document does not establish and you cannot confirm from the document alone: unverified, to be labelled, not treated as established.
+> Return per finding: verdict, one verbatim quote (or "no supporting text in doc"), one sentence of reasoning. Do not soften. Do not add findings.
+
+Carry the results into Step 3:
+- **REFUTED** findings are dropped from the buckets and from the iteration recommendations (noted once in synthesis).
+- **NEEDS-EVIDENCE** findings are demoted one tier and tagged `[reviewer-inference]`; they may appear but cannot anchor a top-5 recommendation on their own.
+- **CONFIRMED** findings are tagged `[verified]`.
+
+This extends Bucket 2's existing `(real)` / `(likely reach)` judgment with an explicit *independent* check rather than the synthesizer's self-assessment.
+
+**Optional — `--verify-claims`:** if the user passed it, also dispatch the bundled `subagent_type: project-idea-validator` (WebFetch/WebSearch; fall back to a `general-purpose` subagent with an inline web prompt if unregistered) to check the doc's external factual claims — named competitors, market stats, exit comps — returning `verified | contradicted | unverifiable` with sources. Contradicted doc-stats become findings; verified claims earn `[verified]`.
+
 ### Step 3 — Synthesize using the consensus/unique/contradictions structure
 
 Once all three reviewers return, classify every finding into one of four buckets, then write iteration recommendations. The classification matters more than the individual findings — consensus findings are highest-confidence problems, contradictions are where the most genuine uncertainty lives.
@@ -143,8 +167,11 @@ The document follows. Read it carefully.
 [full document text]
 ---
 
-Investment context (may be empty):
-[user-supplied context, or "none provided — assume generic founder, limited time and money"]
+Investment context — user-set constraints only (time, money, strategic fit; may be empty):
+[user-supplied constraints, or "none provided — assume generic founder, limited time and money"]
+
+External corroboration (may be empty) — treat as CORROBORATION ONLY. Do NOT let it substitute for your own analysis of the doc's own claims; mark any finding that materially depends on it:
+[user-supplied external context such as "the company later pivoted to X", or "none"]
 
 Apply these four frameworks in sequence. For each, produce 1–3 findings. Each finding has a severity tag (Critical / High / Medium), a one-sentence statement, and a one-sentence supporting evidence from the doc.
 
@@ -194,6 +221,7 @@ Rules:
 - Do not invent evidence. Missing evidence is itself a finding.
 - Do not soften with "but on the other hand" qualifications.
 - Do not produce a verdict or recommendation. That happens in synthesis.
+- Tag each finding's evidence with provenance: `[doc-claim]` if the document asserts it, `[reviewer-inference]` if it is your own reasoning or outside knowledge (an industry rate, a comparable's numbers) not stated in the doc.
 
 Return only the four-section output. No preamble, no conclusion.
 ```
@@ -213,8 +241,11 @@ The document follows.
 [full document text]
 ---
 
-Investment context (may be empty):
-[user-supplied context, or "none provided"]
+Investment context — user-set constraints only (time, money, strategic fit; may be empty):
+[user-supplied constraints, or "none provided"]
+
+External corroboration (may be empty) — treat as CORROBORATION ONLY. Do NOT let it substitute for your own analysis of the doc's own claims; mark any finding that materially depends on it:
+[user-supplied external context, or "none"]
 
 Apply the devils-advocate critique pattern: for each dimension below, decide PASS or FAIL. A PASS means the doc convincingly addresses this dimension. A FAIL means it does not, and the project is at risk in that dimension. Default to FAIL when in doubt — soft critique is worse than wrong critique here.
 
@@ -248,6 +279,7 @@ Rules:
 - Do not include positives. The PASSes are the positives.
 - Do not soften FAILs with caveats. The Fix: suggestion is where constructive guidance goes.
 - Do not produce a verdict or recommendation. That happens in synthesis.
+- Tag each FAIL's basis: `[doc-claim]` if the doc states the weakness, `[reviewer-inference]` if the FAIL rests on your own reasoning or outside knowledge not in the doc.
 
 Return only the table plus Fix: suggestions. No preamble, no conclusion.
 ```
@@ -267,8 +299,11 @@ The document follows.
 [full document text]
 ---
 
-Investment context (may be empty):
-[user-supplied context, or "none provided"]
+Investment context — user-set constraints only (time, money, strategic fit; may be empty):
+[user-supplied constraints, or "none provided"]
+
+External corroboration (may be empty) — treat as CORROBORATION ONLY. Do NOT let it substitute for your own analysis of the doc's own claims; mark any finding that materially depends on it:
+[user-supplied external context, or "none"]
 
 Apply the silent-failure lens. For each of the following questions, produce 1–2 graded findings (Critical / High / Medium severity). If the lens genuinely finds nothing in a category, note it and skip — do not pad.
 
@@ -307,6 +342,7 @@ Rules:
 - Be specific. "The doc is silent on operations" is too vague. "The doc never names who handles a support ticket" is a finding.
 - Do not invent absences the doc actually addresses elsewhere. Read carefully before concluding silence.
 - Do not produce a verdict.
+- Tag each finding's evidence with provenance: `[doc-claim]` if tied to specific doc text, `[reviewer-inference]` if it is your own reasoning or outside knowledge not stated in the doc.
 
 Return only the four-section output. No preamble.
 ```
@@ -351,6 +387,10 @@ Places where two reviewers explicitly disagreed about the same dimension — e.g
 
 Optional. If, after seeing all three reviews, you can identify an obvious weakness none surfaced, list it briefly. Do not invent issues to fill this section — leave it empty if all three reviews were thorough.
 
+### Convergence check (required)
+
+Before writing iteration recommendations, assess convergence explicitly — previously a soft edge case, now required. If Bucket 3 (Contradictions) is empty AND Consensus is large, add a one-paragraph **Convergence caveat** at the top of the synthesis: with three reviewers sharing the parent's framing and model, zero contradictions may indicate a shared blind spot rather than robustness — name the shared assumption the consensus rests on. Also report a **corroboration-dependency count**: how many surviving findings materially depend on the *External corroboration* slot rather than the document itself ("N of M findings depend on external corroboration"). High dependency means the critique is partly about the corroboration, not the doc.
+
 ### Iteration recommendations
 
 After classification, produce a prioritized list of concrete changes for v2. Each recommendation:
@@ -387,9 +427,15 @@ State: `./.autopsy/[slug]/v[N]-stress-test.md`
 
 ## Synthesis
 
+### Verification & convergence
+
+- Internal pass: N high-severity findings checked; C confirmed `[verified]`, R refuted (dropped), E needs-evidence (demoted). One line per dropped/demoted finding with the verifier's reason.
+- Convergence caveat: if contradictions is empty and consensus is large, name the shared assumption; report "N of M findings depend on external corroboration".
+- External claims (`--verify-claims`): per-claim results with sources, or "not run".
+
 ### Consensus findings (two or more reviewers flagged)
 
-- **[Severity]** Finding statement.
+- **[Severity]** `[doc-claim | reviewer-inference | verified]` Finding statement.
   *Sources:* Reviewer A's [framework] + Reviewer B's [dimension] + Reviewer C's [area] (drop any non-contributors).
   *Why this matters:* one sentence on the implication.
 
@@ -397,7 +443,7 @@ State: `./.autopsy/[slug]/v[N]-stress-test.md`
 
 ### Unique to Reviewer A `(real)` / `(likely reach)`
 
-- **[Severity]** Finding statement.
+- **[Severity]** `[provenance]` Finding statement.
   *Source:* Reviewer A's [framework].
   *Assessment:* one sentence on whether B/C plausibly missed it. End with `(real)` or `(likely reach)`.
 
@@ -458,7 +504,7 @@ Run `iterate-to-v2` with this critique to produce a section-by-section change pl
 
 - **Document is too thin (under ~500 words or no concrete claims/numbers):** all three reviewers will return mostly Critical findings about missing substance. Output the reviews normally, but in iteration recommendations, the top item is "expand the doc with concrete claims and numbers before iterating further." Do not pretend a thin doc can be meaningfully improved by addressing axis findings.
 
-- **Reviewers strongly agree on everything (no contradictions):** that is itself a signal worth flagging at the bottom of synthesis ("no contradictions between reviewers — this idea is either robustly weak or the three lenses are not separating it well"). With three reviewers and zero contradictions you should be more suspicious than with two — convergence may indicate shared blind spots, not robustness.
+- **Reviewers strongly agree on everything (no contradictions):** now handled by the required **Convergence check** in Synthesis rules — with three reviewers sharing framing and model, zero contradictions may indicate shared blind spots, not robustness. Name the shared assumption the consensus rests on rather than treating agreement as confirmation.
 
 - **Reviewers strongly disagree on most things (lots of contradictions):** flag this prominently. Mostly-contradictions usually means the doc is so vague that reviewers are reading different ideas into it. Recommendation: tighten the doc's claims before another stress-test pass.
 
@@ -479,4 +525,7 @@ Run `iterate-to-v2` with this critique to produce a section-by-section change pl
 - Do not pad findings to look thorough. If a reviewer returned 3 findings, that's the right number.
 - Do not summarize the doc to the user before the review.
 - Do not soften synthesis language to match the user's apparent emotional state. Harshness is the product.
+- Do not carry a refuted finding into the iteration recommendations. If the independent verifier (Step 2.5) refuted it, it is dropped.
+- Do not present a reviewer's outside-knowledge claim as the doc's own. Only doc-supported or web-verified findings are `[doc-claim]` / `[verified]`; the rest are `[reviewer-inference]`.
+- Do not treat zero contradictions as robustness. Run the required Convergence check.
 - Do not skip writing to `./.autopsy/<slug>/`. The state file IS the loop closure; without it the user has to clipboard-shuttle between skills.

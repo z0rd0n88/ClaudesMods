@@ -17,6 +17,8 @@ Designed for **product and business proposals** — pitches, decks, business pla
 
 Each axis reviewer is dispatched as a subagent via the Task tool with the **full document text in its prompt**. With four reviewers, the doc is replicated four times across subagent transcripts. For confidential decks, unannounced fundraising material, or anything with cap-table details, excerpt or anonymize before running. Mention this to the user once if the doc appears sensitive.
 
+The internal verification pass (see Synthesis rules) adds one more subagent that receives the findings plus the document — same closed-world profile, no external calls. **`--verify-claims` is different:** it sends extracted factual claims (named competitors, cited stats, exit comps) to web search via a bundled research agent. It is OFF by default. Do not enable `--verify-claims` on confidential, unannounced, or cap-table-bearing material — treat turning it on as publishing those claims to a third-party search service.
+
 ## When to use
 
 The user has a document — proposal, pitch deck, spec, business plan, project brief, RFP, one-pager, internal memo — describing a project they are considering committing time or money to. They want to know whether to pursue it.
@@ -36,6 +38,7 @@ Optional, taken inline at invocation: investment context the user provides. Exam
 - Strategic fit: "must complement my existing crypto infrastructure"
 - Constraints: "I have one other co-founder, no funding yet"
 - `--slug <name>` to override the auto-derived state-directory name
+- `--verify-claims` to additionally fact-check the doc's *external* claims (competitors, stats, exit comps) against the web. OFF by default; see Confidentiality. The internal doc-support verification pass always runs and needs no flag.
 
 Do not ask follow-up clarifying questions. If the user gave you a doc, run the evaluation. If investment context is missing, assume a generic founder/operator with limited time and money.
 
@@ -43,7 +46,7 @@ If the user did not actually share a document — only described an idea verball
 
 ## Workflow
 
-Five steps: slug-and-state, read-and-size-check, dispatch four reviewers in parallel, synthesize with multiplicity-aware verdict rule, write output to state.
+Five steps: slug-and-state, read-and-size-check, dispatch four reviewers in parallel, synthesize with multiplicity-aware verdict rule, write output to state. **Synthesis begins with an independent verification pass:** findings the document does not actually support are dropped or demoted *before* the multiplicity table and the verdict rule count them, so a confident-but-unsupported reviewer claim cannot swing the verdict.
 
 ### Step 0 — Determine slug and ensure state directory
 
@@ -113,16 +116,20 @@ The document follows. Read it carefully.
 [full document text]
 ---
 
-Investment context (may be empty):
-[user-supplied context, or "none provided — assume generic founder, limited time and money"]
+Investment context — user-set constraints only (time, money, strategic fit; may be empty):
+[user-supplied constraints, or "none provided — assume generic founder, limited time and money"]
+
+External corroboration (may be empty) — treat as CORROBORATION ONLY. Do NOT let it substitute for your own analysis of the document's own claims, and explicitly mark any finding that materially depends on it:
+[user-supplied external context such as "the company later pivoted to X", or "none"]
 
 Apply this lens:
 [AXIS PROMPT]
 
-Output 3–7 findings as a markdown list. Each finding has three parts on consecutive lines:
+Output 3–7 findings as a markdown list. Each finding has four parts on consecutive lines:
 - Severity tag in bold: **[Critical]**, **[High]**, or **[Medium]**
 - One-sentence statement of the issue
 - One-sentence supporting evidence — quoting or referring to a specific part of the doc, or noting a specific absence ("doc claims X but provides no source")
+- Provenance tag, exactly one of: `[doc-claim]` (the document itself asserts this — quote or cite where) or `[reviewer-inference]` (your own reasoning or outside knowledge — e.g. an industry base rate, a comparable company's revenue, a legal-outcome expectation — that the document does not state). Be honest: if your evidence is a fact you are bringing TO the doc rather than reading FROM it, it is `[reviewer-inference]`, and the synthesizer will not treat it as established.
 
 Severity rubric:
 - Critical — would kill the project if not resolved. Deal-breaker.
@@ -234,7 +241,34 @@ If the document has no concrete numbers, that itself is a Critical finding. ROI 
 
 ## Synthesis rules
 
-After all four reviewers return, do the following on the main thread.
+After all four reviewers return, do the following on the main thread. **The order matters: verify findings first, only then count them.**
+
+### Verify findings before counting (independent internal pass)
+
+The decision rule below is mechanical — it counts Criticals and multi-axis Criticals. A single confident-but-unsupported Critical can therefore swing the whole verdict. So before anything is counted, every **Critical and High** finding is checked against the document by an *independent* verifier that did not produce it.
+
+Dispatch ONE fresh subagent via the Task tool (a `general-purpose` subagent — no web needed; this is a doc-support check, not a fact-check). Give it ONLY the full document text and the Critical/High findings verbatim. Do NOT give it the reviewers' reasoning chains — independence is the point; a verifier that sees the argument rationalizes it. Its instructions:
+
+> For each finding, decide one verdict, defaulting to REFUTE or NEEDS-EVIDENCE whenever the document does not clearly support it:
+> - **CONFIRM** — the document itself supports the finding. Quote the exact sentence or number that does.
+> - **REFUTE** — the finding misreads the document, or the document actually addresses the thing the finding calls missing. Quote the contradicting text.
+> - **NEEDS-EVIDENCE** — the finding rests on a claim about the outside world (an industry rate, a competitor's revenue, a legal outcome) that the document does not establish and you cannot confirm from the document alone. This is not "wrong" — it is "unverified," and it must be labelled, not counted as established.
+> Return, per finding: the verdict, one verbatim quote (from the doc, or "no supporting text in doc"), and one sentence of reasoning. Do not soften. Do not add new findings.
+
+Apply the results **before** building the table:
+- **REFUTED** → dropped from all counting and from the report's axis sections (with a one-line note in the Verification summary).
+- **NEEDS-EVIDENCE** → demoted one severity tier (Critical→High, High→Medium) and re-tagged `[reviewer-inference]`; anything demoted below Medium is dropped. It may still appear, but cannot by itself drive the verdict.
+- **CONFIRMED** → keeps its severity, re-tagged `[verified]`.
+
+**Forked-panel escape hatch:** if a REFUTE lands on a Critical that the verdict hinges on (removing it changes the decision-rule output), STOP. Do not silently re-run the rule to a softer verdict — surface the conflict to the user ("the verdict turned on a finding the verifier refuted") and let them adjudicate.
+
+### Verify external claims (`--verify-claims`, optional — OFF by default)
+
+Only if the user passed `--verify-claims`. This is the open-world pass — it checks whether the *document's own* external factual claims are true, which the closed-world reviewers structurally cannot do (it is the gap that lets an inflated stat or a fabricated competitor pass unchallenged).
+
+Extract the doc's checkable external claims — named competitors, market-size / TAM statistics, cited third-party numbers, exit comparables ("Wiz sold for $X", "the market is $Y"). Dispatch the bundled research agent as `subagent_type: project-idea-validator` (it carries WebFetch/WebSearch and is purpose-built for competitor/market checks). If that agent type is not registered at runtime, fall back to a `general-purpose` subagent with an inline web-research prompt. Ask it to return, per claim: `verified | contradicted | unverifiable`, with a source URL where possible.
+
+Fold the results in: a **contradicted** doc-stat becomes (or upgrades) a Critical-Thinking / ROI finding tagged `[verified]` ("doc claims $40B; sources put it at $X"); a **verified** claim lets any finding that merely doubted it be dropped and lets the doc's number carry `[verified]`; **unverifiable** claims stay `[reviewer-inference]`.
 
 ### Build the multiplicity table (do this BEFORE counting)
 
@@ -284,7 +318,16 @@ Else:
     → INVEST
 ```
 
-The rule is the default. If your synthesis judgment differs from what the rule produces, override it — but state in the verdict paragraph WHY you overrode. Vibes are not a reason.
+The rule is the default. If your synthesis judgment differs from what the rule produces, override it — but state in the verdict paragraph WHY you overrode. Vibes are not a reason. **Only verified findings feed the rule** — REFUTED findings were dropped and NEEDS-EVIDENCE findings demoted in the verification pass above, so the counts here reflect what survived.
+
+### Check for manufactured convergence (required before writing the verdict)
+
+Cross-axis agreement drives this rule toward Skip/Pivot — which means a *shared blind spot* can manufacture a harsh verdict just as easily as a real deal-breaker can. Before committing the verdict, run two checks:
+
+1. **Single-assumption trace.** If the multi-axis Criticals that produced the verdict all trace back to ONE underlying assumption (e.g. "the market never materializes"), say so in the verdict paragraph: the verdict is only as strong as that one assumption, and its flip-condition should target it directly. Four axes agreeing because they all inherited the same premise is one data point, not four.
+2. **Corroboration dependency.** Count how many verdict-driving findings materially depend on the *External corroboration* slot rather than the document itself, and report it ("N of M verdict-driving findings depend on external corroboration"). A high fraction means the verdict is partly a verdict on the corroboration, not the doc — flag it.
+
+This does not change the rule's output; it calibrates the confidence attached to it.
 
 ### Compile executive summary
 
@@ -319,12 +362,12 @@ State: `./.autopsy/[slug]/v[N]-verdict.md`
 
 ## Executive summary
 
-- **[Severity]** [N/4 axes] *[Primary axis]* — one-sentence finding
+- **[Severity]** [N/4 axes] `[provenance]` *[Primary axis]* — one-sentence finding
 - (3–5 bullets, sorted by severity then multiplicity)
 
 ## Critical thinking
 
-- **[Severity]** Finding statement.
+- **[Severity]** `[doc-claim | reviewer-inference | verified]` Finding statement.
   *Evidence:* one sentence pointing to specific text or a specific absence in the doc.
 
 (repeat for each finding from Reviewer 1)
@@ -340,6 +383,14 @@ State: `./.autopsy/[slug]/v[N]-verdict.md`
 ## ROI signal
 
 (same format)
+
+---
+
+## Verification summary
+
+- **Internal pass:** N Critical/High findings checked; C confirmed `[verified]`, R refuted (dropped), E needs-evidence (demoted). One line per dropped/demoted finding with the verifier's reason.
+- **External claims (`--verify-claims`):** per-claim verified / contradicted / unverifiable with sources — or "not run".
+- **Convergence:** if the verdict rests on a single shared assumption or leans on external corroboration, state it (e.g. "verdict traces to one assumption: the market never materializes"; "2 of 5 verdict-driving findings depend on external corroboration").
 
 ---
 
@@ -415,4 +466,7 @@ Why forbidden: no artifact, no threshold, no date. The founder cannot tell wheth
 - Do not summarize the doc back to the user before the review. They wrote it.
 - Do not produce a flip-condition without artifact + threshold + date. Vague flip-conditions are forbidden.
 - Do not collapse the multiplicity table by deleting duplicates. The verdict rule depends on multiplicity.
+- Do not let an unverified reviewer inference drive the verdict. A finding the internal pass tagged `[reviewer-inference]` and could not confirm is demoted — never a decision-driving Critical.
+- Do not present a reviewer's outside-knowledge claim (an industry rate, a comparable's revenue like "Wiz ~$500M ARR") as established fact. Tag it `[reviewer-inference]` so the reader sees it is the reviewer's assertion, not the doc's and not verified.
+- Do not skip the internal verification pass, and do not run the reviewers and the verifier in the same subagent. Independence is what stops a confident-but-wrong finding from swinging the verdict.
 - Do not skip writing to `./.autopsy/<slug>/`. The state file IS the loop closure.
