@@ -106,6 +106,8 @@ Scan the critique input for these headers (case-insensitive):
 - Default-defer: Medium findings (unless 3+ Medium findings cluster within a single axis — then accept the cluster)
 - Default-reject: none
 
+**Provenance modifier (v1.2.0 outputs, both formats):** if findings carry provenance tags, prefer `[verified]` findings, and treat a `[reviewer-inference]` finding the review's verification pass could not confirm the same way as a `(likely reach)` — default-defer it rather than default-accept, even at high severity. A claim the reviewers asserted from outside knowledge but nobody verified should not silently drive a v2 rewrite.
+
 **If unknown format:**
 - Default-accept: all findings (legacy behavior)
 - Print a note at the top of the output: "Critique format not auto-detected. Accepting all findings. To weight by confidence, re-invoke with bucket annotations or accept/reject decisions."
@@ -146,6 +148,7 @@ Regardless of critique format, normalize each finding to:
 - Where in v1 it lives (which section/claim/number)
 - Severity if stated (Critical / High / Medium); otherwise infer
 - Bucket tag if detected (Consensus / Unique(real) / Unique(reach) / Speculative / Verdict-Critical / Verdict-High / Verdict-Medium / unknown)
+- Provenance tag if present (`[verified]` / `[doc-claim]` / `[reviewer-inference]`) — v1.2.0 review outputs carry these
 
 If two findings target the same v1 element, merge them, keeping the highest severity and unioning bucket tags.
 

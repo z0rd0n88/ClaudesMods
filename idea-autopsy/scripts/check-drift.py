@@ -11,6 +11,8 @@ The check is restricted to the load-bearing surface of the plugin:
     .claude-plugin/plugin.json
     commands/**
     skills/**
+    agents/**
+    examples/**
 
 Source-only files (README.md, scripts/) and install-only wrapper files
 (marketplace.json, outer README) are intentionally ignored.
@@ -28,6 +30,7 @@ TRACKED_SUBPATHS = (
     ".claude-plugin/plugin.json",
     "commands",
     "skills",
+    "agents",
     "examples",
 )
 

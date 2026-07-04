@@ -1,21 +1,27 @@
 ---
 description: "Route to the right Idea Autopsy skill based on what you have, with state-aware loop closure"
-argument-hint: "[doc-path] [--loop|--status|--reset] [--slug NAME]"
+argument-hint: "[doc-path] [--loop|--status|--reset|--verify-claims|--validate] [--slug NAME]"
 ---
 
 # /autopsy — Idea Autopsy router
 
 You are the entry point for the Idea Autopsy plugin. Your job is to read the
 user's inputs and signals, determine where they are in the review cycle (using
-on-disk state if present), pick exactly one of the three bundled skills, and
+on-disk state if present), pick exactly one of the four bundled skills, and
 invoke it. You do not produce the review yourself — the chosen skill does.
 
-The three skills, in the order they appear in the workflow:
+The four skills, in the order they appear in the workflow:
 
 ```
-stress-test-idea  →  iterate-to-v2  →  evaluate-proposal-harsh
-   (find holes)      (change plan)        (verdict)
+stress-test-idea  →  iterate-to-v2  →  evaluate-proposal-harsh  →  strategize-from-verdict
+   (find holes)      (change plan)        (verdict)                 (forward strategy)
 ```
+
+The first three critique or translate-critique; `strategize-from-verdict` is the
+constructive step that runs AFTER a verdict, turning a Pivot / Proceed / Skip-with-flip
+into ranked alternative theses and sequencing. In the two review skills, findings now
+pass an independent verification stage before they count, and carry a provenance tag
+(`[doc-claim]` / `[reviewer-inference]` / `[verified]`).
 
 ## State directory
 
@@ -30,7 +36,8 @@ the user's cwd if the doc was pasted). Layout:
 ├── v1-change-plan.md         # iterate-to-v2 output
 ├── v2.md                     # founder's rewrite (user provides)
 ├── v2-stress-test.md         # optional re-test
-└── v2-verdict.md             # evaluate-proposal-harsh output
+├── v2-verdict.md             # evaluate-proposal-harsh output
+└── v2-strategy.md            # strategize-from-verdict output (post-verdict)
 ```
 
 The slug is derived from the doc filename (basename without extension) unless
@@ -45,6 +52,8 @@ detect what stage the user is at, and routes to the next-logical step.
 | `--status` | Read state.json and print where the user is in the cycle and what's next. Do not invoke any skill. |
 | `--reset` | Archive existing `./.autopsy/<slug>/` to `<slug>.archived-<timestamp>/` and start fresh on the next invocation. |
 | `--slug NAME` | Override the auto-derived slug (useful when the doc was pasted or when multiple docs share a name). |
+| `--verify-claims` | Pass-through to `stress-test-idea` / `evaluate-proposal-harsh`: additionally web-checks the doc's external factual claims (competitors, stats, exit comps). OFF by default; sends claims to web search, so do not use on confidential material. The internal doc-support verification pass runs regardless. |
+| `--validate` | Pass-through to `strategize-from-verdict`: web-checks each proposed thesis's market and competitors. OFF by default; same confidentiality caveat. |
 
 ## Routing rules
 
@@ -89,8 +98,9 @@ If `./.autopsy/<slug>/state.json` exists, route based on what's missing:
 | `v1.md` + `v1-stress-test.md`, no v2 yet | `iterate-to-v2` (stage 2) — UNLESS user explicitly asks for "verdict" or "v1 final", in which case `evaluate-proposal-harsh` |
 | `v1.md` + `v1-stress-test.md` + `v1-change-plan.md`, no v2 yet | Tell the user the change plan is ready; the next step is THEIR rewrite into `./.autopsy/<slug>/v2.md`. Do not invoke a skill. |
 | `v2.md` present, no `v2-stress-test.md` or `v2-verdict.md` | Default to `evaluate-proposal-harsh` if the user signals decision intent; otherwise `stress-test-idea` for another iteration round |
-| `v<N>-verdict.md` present and verdict was Skip/Pivot | Tell the user the loop closed; do not auto-invoke. |
-| `v<N>-verdict.md` present and verdict was Invest | Tell the user the loop closed with Invest; do not auto-invoke. |
+| `v<N>-verdict.md` present, verdict was Pivot/Proceed, user wants forward motion | `strategize-from-verdict` (turn the verdict into ranked theses + sequencing). |
+| `v<N>-verdict.md` present and verdict was Skip/Pivot, no forward-motion signal | Tell the user the loop closed; offer `strategize-from-verdict` if they want the constructive pivot. Do not auto-invoke. |
+| `v<N>-verdict.md` present and verdict was Invest | Tell the user the loop closed with Invest; offer `strategize-from-verdict` for a go-to-market sequencing pass. Do not auto-invoke. |
 
 ### Rule 3 — Verdict intent → `evaluate-proposal-harsh`
 
@@ -109,6 +119,19 @@ If the user has one document and signals iteration intent, invoke
 - "what should I fix" / "what's wrong with this"
 - "harsh feedback" / "review before I commit"
 - "v1" / "first draft" / "early draft" framing
+
+### Rule 5 — Post-verdict strategy intent → `strategize-from-verdict`
+
+If a verdict exists (a `v<N>-verdict.md` on disk, or the user pasted one) AND the
+user signals forward motion, invoke `strategize-from-verdict`. Signals:
+- "now what" / "how do I fix this" / "what should I pivot to"
+- "help me de-risk this" / "what's the strongest version of this"
+- "give me the pivot and the sequencing"
+
+This skill needs a verdict to anchor to. If none exists, route to
+`evaluate-proposal-harsh` first (to produce a verdict) or `stress-test-idea` (for
+iteration). Distinguish from `iterate-to-v2`: that translates a critique into
+document edits; this generates net-new strategy the critique never contained.
 
 ### Ambiguous case — doc only, no signal, no state
 
@@ -147,9 +170,10 @@ When `--loop` is passed, you orchestrate the full cycle:
    > `quit` to stop here.
 4. **Stage 3.** When the user replies with v2, invoke `evaluate-proposal-harsh`
    on v2. The verdict is the loop's terminal state.
-5. **If the verdict is Pivot or Skip,** offer one more iterate-to-v2 pass to
-   address the verdict's findings, then evaluate v3. Cap loop at 3 versions
-   to prevent runaway.
+5. **If the verdict is Pivot or Skip,** offer either one more iterate-to-v2 pass
+   to address the verdict's findings (then evaluate v3), or a
+   `strategize-from-verdict` pass to generate ranked alternative theses. Cap the
+   loop at 3 versions to prevent runaway.
 
 The user can break out at any stage by typing `quit` or by ignoring the
 continue prompt for a full session turn.
@@ -180,6 +204,9 @@ The three skills chain across multiple `/autopsy` calls when not using
 3. User rewrites → drops `v2.md` into `./.autopsy/<slug>/`.
 4. `/autopsy <doc>` (Rule 3 if verdict intent, or Rule 2 state-aware) →
    `evaluate-proposal-harsh` produces verdict, writes `v2-verdict.md`.
+5. (optional) `/autopsy` with forward-motion intent (Rule 5) →
+   `strategize-from-verdict` turns the verdict into ranked theses + sequencing,
+   writes `v2-strategy.md`.
 
 The user can also explicitly use `--loop` to have the router orchestrate the
 whole cycle, or `--status` to check progress.
