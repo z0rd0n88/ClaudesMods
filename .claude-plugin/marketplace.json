@@ -91,6 +91,15 @@
       "author": { "name": "z0rd0n88" },
       "category": "productivity",
       "keywords": ["scratchpad", "capture", "backlog", "ideas", "github-issue", "todo", "research"]
+    },
+    {
+      "name": "idea-panel",
+      "source": "./idea-panel",
+      "description": "Parallel panel of thinking-skills mental-model lenses generates candidate ideas for a topic, then a synthesizer ranks and dedupes them into one shortlist. Generative sibling of multi-agent-review.",
+      "version": "1.0.0",
+      "author": { "name": "z0rd0n88" },
+      "category": "productivity",
+      "keywords": ["brainstorming", "ideation", "thinking-skills", "mental-models", "synthesis", "idea-generation"]
     }
   ]
 }
