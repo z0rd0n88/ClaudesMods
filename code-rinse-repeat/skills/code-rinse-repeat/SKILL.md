@@ -11,8 +11,6 @@ allowed-tools:
   - Agent
   - Skill
   - AskUserQuestion
-  - TaskCreate
-  - TaskUpdate
 ---
 
 # code-rinse-repeat
@@ -159,7 +157,7 @@ Only fires when `--pause-after-build` was set AND the run is interactive. Intera
 
 Steps:
 
-1. **Snapshot the build.** Compute `files_created`, `files_modified`, and a 1-line per-test-file pass count (e.g. `47 passed, 0 failed in tests/`). Read current `cost_estimate` and `wall_elapsed`.
+1. **Snapshot the build.** Compute `files_created`, `files_modified`, and a 1-line per-test-file pass count (e.g. `47 passed, 0 failed in tests/`). Compute `cost_estimate` and `wall_elapsed` per §7.5 (these are derived, not persisted in `state.json`).
 2. **Pause the wall-clock.** Write `paused_at: <iso-timestamp>` to `state.json`. Wall-clock budget enforcement (§7.5) treats time between `paused_at` and `resumed_at` as zero.
 3. **Prompt the user** via `AskUserQuestion`:
 
@@ -213,7 +211,13 @@ For round N from 1 to max-iterations:
 | `crypto`, `encrypt`, `sign`, `hash`, `nonce` / any `**/*crypto*` | `crypto-reviewer` |
 | `concurrency`, `lock`, `mutex`, `goroutine`, `async`, `race` | `concurrency-reviewer` |
 
-If no row matches, round 2 uses the round-1 roster unchanged.
+**Specialist-resolution fallback.** These slugs are recommended names, not required. Resolve each by probing the active agent pool in this order — first hit wins:
+1. Bare slug as listed (e.g. `database-reviewer`).
+2. `ecc-<slug>` variant (e.g. `ecc-database-reviewer`) — many installs carry the ECC-prefixed cohort.
+3. Any active agent whose frontmatter `description` mentions the row's keyword set.
+4. If nothing matches, keep the round-1 roster unchanged and augment the synthesizer brief with a one-line domain focus (e.g. *"Pay special attention to database migration safety"*). Do NOT halt on unresolved specialists.
+
+If no row matches at all, round 2 uses the round-1 roster unchanged.
 
 Capture the synthesized review document. Write it to `.code-rinse-repeat/<slug>/round-N-review.md`.
 
