@@ -240,6 +240,26 @@
         "auto-triggered",
         "chain-of-skills"
       ]
+    },
+    {
+      "name": "spec-tacular",
+      "source": "./spec-tacular",
+      "description": "User-invoked only. Builds a code-grounded, implementation-ready engineering spec through three gated phases: reconnaissance & alignment, a mid-draft outline-approval gate, then a fully-detailed spec with embedded decision records, alternative analysis, and fact-checking. Hand-off ready — no clarifying questions left.",
+      "version": "1.0.0",
+      "author": {
+        "name": "z0rd0n88"
+      },
+      "category": "productivity",
+      "keywords": [
+        "spec",
+        "specification",
+        "prd",
+        "design-doc",
+        "planning",
+        "requirements",
+        "decision-records",
+        "gated-workflow"
+      ]
     }
   ]
 }
