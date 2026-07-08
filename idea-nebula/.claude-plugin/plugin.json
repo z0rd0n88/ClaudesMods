@@ -1,0 +1,12 @@
+{
+  "name": "idea-nebula",
+  "description": "Evidence-based brainstorming pipeline: four independent entropy-source generators (verbalized-sampling tails, ordinary personas, far-domain defixation, live demand mining) with mandatory boldness revision, blind pairwise-swap ranking, demand grounding, and a barbell (safe + moonshot) shortlist.",
+  "version": "1.0.0",
+  "author": {
+    "name": "z0rd0n88"
+  },
+  "homepage": "https://github.com/z0rd0n88/ClaudesMods/tree/main/idea-nebula",
+  "repository": "https://github.com/z0rd0n88/ClaudesMods",
+  "license": "MIT",
+  "keywords": ["brainstorming", "ideation", "verbalized-sampling", "demand-validation", "diversity", "idea-generation", "market-research"]
+}
