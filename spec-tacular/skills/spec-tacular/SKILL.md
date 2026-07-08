@@ -1,6 +1,6 @@
 ---
 name: spec-tacular
-description: Turns a concept into an implementation-ready spec through three gated phases: recon, blueprint approval, full spec. Use when the user wants a rigorous spec, PRD, or design doc from an idea or feature.
+description: "Turns a concept into an implementation-ready spec via three gated phases (recon, blueprint approval, full spec). Use when the user wants a rigorous spec, PRD, or design doc from an idea."
 ---
 
 # Spec-tacular
