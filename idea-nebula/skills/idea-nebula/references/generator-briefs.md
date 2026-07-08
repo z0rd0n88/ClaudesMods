@@ -4,7 +4,7 @@ The orchestrator (`../SKILL.md` Stage 1) expands these per generator. Not loaded
 
 ## Shared brief template
 
-Expand `{{ ... }}` and pass verbatim as the `Agent` call's `prompt`. Strip any single-`#` annotation line before dispatch; keep real `##` headings. When `--context` is absent, strip the entire `## CONTEXT` block. With `--plain`, strip steps 2 and 3 of THE METHOD in the generator instruction blocks below.
+Expand `{{ ... }}` and pass verbatim as the `Agent` call's `prompt`. Strip any single-`#` annotation line before dispatch; keep real `##` headings. When `--context` is absent, strip the entire `## CONTEXT` block. With `--plain`, strip only the Verbalized-Sampling and boldness-revision steps from each generator's METHOD — `tails`: steps 1 and 3; `folk`: step 3; `alien`: step 4; `miner`: step 4 — and fix up each preamble's "follow all N steps; show only step-N output" line to match what remains.
 
 ```
 You are one of four independent idea generators. You have no prior conversation context, and you will never see the other generators' output — do not try to be "balanced" or leave room for them. Be concrete and specific; vague category-level output ("an app for X") is a failure.

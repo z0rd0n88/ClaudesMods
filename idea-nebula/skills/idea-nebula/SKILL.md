@@ -84,7 +84,7 @@ idea-nebula <topic...> [--founder <desc>] [--context <path>] [--wild <n>]
 
 > ⚠️ **PARALLELISM RULE — DO NOT SERIALIZE, DO NOT LET GENERATORS INTERACT.** All generator `Agent` calls MUST be issued in a SINGLE assistant message. Each brief is fully self-contained; generators share no state and never see each other's output. `subagent_type: general-purpose`, `description: "idea-nebula: <generator>"`.
 
-Default roster: `tails`, `folk`, `alien`, `miner`. With `--wild 2`: `tails`, `alien`×2 (each forced to a different domain), `miner` — `folk` is dropped to hold the 4-cap. Expand each brief from `references/generator-briefs.md` with `{{TOPIC}}`, `{{CONTEXT_BLOCK}}`, `{{FOUNDER}}`, and the generator-specific instruction. The `miner` generator needs live web access (WebSearch/WebFetch/Bash for `curl`/`gh`) — see `references/demand-check.md` §Sources for its endpoints.
+Default roster: `tails`, `folk`, `alien`, `miner`. With `--wild 2`: `tails`, `alien`×2 (each forced to a different domain), `miner` — `folk` is dropped to hold the 4-cap. Expand each brief from `references/generator-briefs.md` with `{{TOPIC}}`, `{{CONTEXT_BLOCK}}`, `{{FOUNDER}}`, and the generator-specific instruction. The `miner` generator needs live web access (WebSearch/WebFetch/Bash for `curl`/`gh`) — prepend the §Sources table from `references/demand-check.md` into its brief, since the brief refers to "the endpoints you were given".
 
 With `--plain`: strip the VS and boldness-revision instructions from the briefs (comparison mode).
 
@@ -101,7 +101,7 @@ One `Agent` call (`description: "idea-nebula: rank"`) with the ranking brief fro
 4. Name the **modal region** explicitly, and score each finalist's novelty as *distance from that modal region* (justified in one line each) — never as a self-asserted number.
 
 ### Stage 4 — GROUND: demand-check (default ON)
-Unless `--no-demand`: one `Agent` call per finalist up to `--demand-top`, IN PARALLEL (`description: "idea-nebula: demand <title>"`), each running the live-mining brief from `references/demand-check.md`. Hard thresholds: <20 independent complaints → DOWNGRADE flag; no existing paid vendor/substitute → DOWNGRADE; free ChatGPT/Claude covers ≥80% of core function with no data/community/network moat → KILL-ZONE flag. Each returns a demand-evidence block with sourced links/quotes.
+Unless `--no-demand`: one `Agent` call per finalist up to `--demand-top`, IN PARALLEL (`description: "idea-nebula: demand <title>"`), each running the live-mining brief from `references/demand-check.md` with the §Sources table prepended. Hard thresholds: <20 independent complaints → DOWNGRADE flag; no existing paid vendor/substitute → DOWNGRADE; free ChatGPT/Claude covers ≥80% of core function with no data/community/network moat → KILL-ZONE flag. Each returns a demand-evidence block with sourced links/quotes.
 
 ### Stage 5 — REPORT
 Assemble the final report per `references/ranking-and-synthesis.md` §Report: executive summary → **Safe Picks** and **Moonshots** (barbell, separate lists) → demand-evidence table → modal-region map → convergence & productive disagreement → what-to-validate-next (fake-door / LOI playbook pointers) → the mandatory human-final-cut disclaimer. Print verbatim as the final message. If `--write-to`: `mkdir -p` parent, write, prepend `Wrote: <absolute path>`. Suggest the follow-on pipeline: `idea-autopsy:iterate-to-v2` → `product-management:write-spec` / `to-prd` → `idea-autopsy:evaluate-proposal-harsh`.
