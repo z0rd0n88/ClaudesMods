@@ -1,12 +1,13 @@
 ---
 name: daily-loop
-description: Route every work session through the right skill chain: feature → brainstorming+plans+tdd; returning work → recall; 3+ steps → planning-with-files; pre-merge → multi-agent-review-loop.
-user-invocable: false
+description: Session-start routing table (auto-triggered, not user-invocable): feature → brainstorming+plans+tdd; returning → recall; 3+ steps → planning-with-files; pre-merge → multi-agent-review-loop.
 ---
 
 # Daily Loop — Workflow Routing Table
 
 This skill encodes the standard workflow routing decisions so they are harness-enforceable rather than advice. Apply this at the start of every session to pick the right chain.
+
+**This skill is not user-invocable.** It has no slash command; it activates via context sensing at session start and shapes the assistant's default chain, rather than firing on `/daily-loop`.
 
 ## Session Type → Skill Chain
 

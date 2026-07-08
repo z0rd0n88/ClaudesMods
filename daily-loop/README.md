@@ -1,32 +1,44 @@
 # daily-loop
 
-Auto-triggered workflow routing skill. Encodes standard "which skill chain do I run for this kind of session" decisions as a lookup table, so the harness enforces them instead of the user re-deciding every time.
+Session-start workflow routing table. Encodes standard "which skill chain do I run for this kind of session" decisions as a lookup so the harness enforces them instead of the user re-deciding every time.
 
-**Not user-invocable.** The skill's frontmatter carries `user-invocable: false` — it activates on session start / context sensing and shapes the assistant's default chain, rather than firing on a `/daily-loop` slash command.
+```
+New feature      → superpowers:brainstorming
+                 → superpowers:writing-plans
+                 → superpowers:test-driven-development
+                 → superpowers:verification-before-completion
+Returning work   → read memory/MEMORY.md + recent session-data/ first, then resume
+3+ tool calls    → planning-with-files (task_plan.md before first edit)
+Pre-merge / PR   → multi-agent-review-loop as the quality gate
+Stuck / uncertain→ thinking-skills:thinking-model-router
+Brainstorm       → idea-panel (products/directions) | superpowers:brainstorming (features)
+                 | grill-with-docs (attack an existing plan)
+```
 
-## What it routes
+**Not user-invocable.** There is no `/daily-loop` slash command; the skill activates via session-start context sensing and shapes the assistant's default chain.
 
-| Situation | Chain |
-|---|---|
-| New feature / new functionality | `superpowers:brainstorming` → `superpowers:writing-plans` → `superpowers:test-driven-development` → `superpowers:verification-before-completion` |
-| Returning to in-progress work | Read `memory/MEMORY.md` + recent session summaries first, then resume |
-| Any task with 3+ tool calls | `planning-with-files` before the first edit |
-| Pre-merge / pre-PR | `multi-agent-review-loop` as the quality gate |
-| Stuck / uncertain approach | `thinking-skills:thinking-model-router` |
+## Why a routing table?
 
-Plus a brainstorm-routing table (product/business direction → `idea-panel`; feature scoping → `superpowers:brainstorming`; attacking a plan → `grill-with-docs`).
-
-## Design principle
-
-Fewer, non-contradictory routing rules produce better outcomes than a long list of instructions. The skill exists to enforce the critical chain, not to catalogue every possibility.
+Fewer, non-contradictory routing rules produce better outcomes than a long list of instructions. The skill exists to enforce the critical chain — don't add steps outside this table without a concrete reason.
 
 ## Composition
 
 Names the following as canonical downstream targets:
-- `multi-agent-review-loop` (this marketplace, plugin `multi-agent-review`)
-- `idea-panel` (this marketplace, plugin `idea-panel`)
-- `planning-with-files` (openskills)
+- `multi-agent-review-loop` — this marketplace, plugin `multi-agent-review`
+- `idea-panel` — this marketplace, plugin `idea-panel`
+- `planning-with-files` — openskills cohort
 - `superpowers:brainstorming`, `superpowers:writing-plans`, `superpowers:test-driven-development`, `superpowers:verification-before-completion`
 - `thinking-skills:thinking-model-router`
 
-If any of those are absent, the routing degrades gracefully — the skill is guidance, not a hard dependency.
+If any target is absent, routing degrades gracefully — the skill is guidance, not a hard dependency.
+
+## Install
+
+```bash
+/plugin marketplace add z0rd0n88/ClaudesMods
+/plugin install daily-loop@claudes-mods
+```
+
+## Version
+
+1.0.0 — initial release.

@@ -223,24 +223,6 @@
         "auto-triggered",
         "chain-of-skills"
       ]
-    },
-    {
-      "name": "edit-agents",
-      "source": "./edit-agents",
-      "description": "Toggle Claude Code agents on/off by moving their .md file between active-scan dir and sibling parked/ dir OUTSIDE the recursive-scan tree.",
-      "version": "1.0.0",
-      "author": {
-        "name": "z0rd0n88"
-      },
-      "category": "productivity",
-      "keywords": [
-        "agents",
-        "toggle",
-        "parking",
-        "enable-disable",
-        "context-management",
-        "cli-utility"
-      ]
     }
   ]
 }
