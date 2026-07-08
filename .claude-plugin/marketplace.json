@@ -95,7 +95,7 @@
       "name": "i-cant-even",
       "source": "./i-cant-even",
       "description": "Design-decision advisor. Orients on the codebase, grills you, runs a 4-persona panel, delivers a one-screen recommendation memo.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "z0rd0n88"
       },
@@ -227,7 +227,7 @@
       "name": "daily-loop",
       "source": "./daily-loop",
       "description": "Auto-triggered workflow routing table \u2014 session-type \u2192 skill-chain, plus brainstorm routing. Not user-invocable.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "z0rd0n88"
       },
@@ -244,8 +244,8 @@
     {
       "name": "spec-tacular",
       "source": "./spec-tacular",
-      "description": "User-invoked only. Builds a code-grounded, implementation-ready engineering spec through three gated phases: reconnaissance & alignment, a mid-draft outline-approval gate, then a fully-detailed spec with embedded decision records, alternative analysis, and fact-checking. Hand-off ready — no clarifying questions left.",
-      "version": "1.0.0",
+      "description": "User-invoked only. Builds a code-grounded, implementation-ready engineering spec through three gated phases: reconnaissance & alignment, a mid-draft outline-approval gate, then a fully-detailed spec with embedded decision records, alternative analysis, and fact-checking. Hand-off ready \u2014 no clarifying questions left.",
+      "version": "1.0.1",
       "author": {
         "name": "z0rd0n88"
       },
@@ -253,8 +253,8 @@
       "keywords": [
         "spec",
         "specification",
-        "prd",
-        "design-doc",
+        "engineering-spec",
+        "handoff",
         "planning",
         "requirements",
         "decision-records",
