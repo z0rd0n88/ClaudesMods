@@ -1,6 +1,6 @@
 ---
 name: multi-agent-developer
-description: Manager-led TDD dev team (≤4 Opus agents) that explores a project, picks specialists from active+parked catalogs, debates a spec across RED→GREEN→REFACTOR rounds in markdown, synthesizes via ecc-code-architect, materializes a worktree, runs tests, and retries once on failure.
+description: Manager-led TDD dev team (≤4 Opus agents) debates a spec across RED→GREEN→REFACTOR rounds in markdown, then a synthesizer materializes a worktree and runs tests with one retry on failure.
 allowed-tools:
   - Bash
   - Read

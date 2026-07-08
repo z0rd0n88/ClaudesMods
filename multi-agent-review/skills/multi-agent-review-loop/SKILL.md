@@ -1,6 +1,6 @@
 ---
 name: multi-agent-review-loop
-description: Iterative wrapper around multi-agent-review for a single PR — spawns a fresh review subagent per round, applies fixes, re-reviews, until APPROVE or max iterations. User-invoked; the invoking agent orchestrates the loop.
+description: Iterative wrapper around multi-agent-review for one PR — fresh review subagent per round, coordinator applies fixes, re-review, until APPROVE or max iterations. User-invoked.
 allowed-tools:
   - Bash
   - Read

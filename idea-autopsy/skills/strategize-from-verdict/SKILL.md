@@ -11,7 +11,7 @@ It exists because the most useful move after a harsh verdict is not "here's what
 
 ## Scope
 
-Designed for **product and business proposals** that have already been through `evaluate-proposal-harsh` (or carry an equivalent verdict + findings). It reads the verdict from on-disk state. It is **not** a generic brainstormer — every option it produces must be tied to (a) the team's stated assets and (b) the specific findings that sank the original thesis. For open-ended idea generation with no verdict to anchor to, use a brainstorming tool such as `xan-idea-panel` instead.
+Designed for **product and business proposals** that have already been through `evaluate-proposal-harsh` (or carry an equivalent verdict + findings). It reads the verdict from on-disk state. It is **not** a generic brainstormer — every option it produces must be tied to (a) the team's stated assets and (b) the specific findings that sank the original thesis. For open-ended idea generation with no verdict to anchor to, use a brainstorming tool such as `idea-panel` instead.
 
 ## Confidentiality
 
@@ -149,6 +149,6 @@ Draft the recommended path as a v[N+1] doc and run `stress-test-idea` or `evalua
 - Do not propose a thesis that reinherits a Critical the verdict already raised. The whole point is to dodge them.
 - Do not produce vague options ("go upmarket", "explore adjacent markets"). Every option needs a wedge, a sequence, and a first test.
 - Do not overwrite or contradict the verdict. This skill builds on it; it does not relitigate it.
-- Do not duplicate `xan-idea-panel`. This is verdict-anchored and asset-constrained, not open-ended ideation.
+- Do not duplicate `idea-panel`. This is verdict-anchored and asset-constrained, not open-ended ideation.
 - Do not enable `--validate` (web) on confidential or unannounced material.
 - Do not skip writing to `./.autopsy/<slug>/`. The strategy memo is part of the loop's on-disk trail.

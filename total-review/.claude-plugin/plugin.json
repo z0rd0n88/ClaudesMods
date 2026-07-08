@@ -1,7 +1,7 @@
 {
   "name": "total-review",
   "description": "Parallel multi-agent code review pattern. Library skill + scaffold companion that fans specialised reviewers along clean layer boundaries with exclusion-list dedup.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": {
     "name": "z0rd0n88"
   },
