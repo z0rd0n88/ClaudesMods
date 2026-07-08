@@ -29,6 +29,15 @@ spec-tacular add SSO to the admin dashboard
 spec-tacular real-time collaborative cursor for our editor
 ```
 
-For *evaluating* an existing idea/proposal rather than specifying one, use
-`idea-autopsy:evaluate-proposal-harsh`. For *generating* candidate ideas, use
-`idea-panel`.
+Reach for a neighbor instead when:
+
+- *Evaluating* an existing idea/proposal → `idea-autopsy:evaluate-proposal-harsh`.
+- *Generating* candidate ideas → `idea-panel`.
+- A **PM PRD** with metrics/personas → `write-spec`.
+- A **PRD from the current conversation**, published to a tracker → `to-prd`.
+- A **single architecture decision** (one ADR) → `engineering:architecture`.
+- A **task-by-task implementation plan**, not a spec → `prp-plan`.
+
+spec-tacular's niche vs. these: a *code-grounded engineering spec* with a
+mid-draft outline-approval gate and embedded decision records — buildable by an
+implementation team without follow-up questions.

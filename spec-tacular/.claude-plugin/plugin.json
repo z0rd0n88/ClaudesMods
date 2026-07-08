@@ -1,6 +1,6 @@
 {
   "name": "spec-tacular",
-  "description": "Turns a concept into an implementation-ready spec through three gated phases: reconnaissance & alignment, a blueprint approval gate, then a fully-detailed spec with decision records, alternative analysis, and fact-checking. Hand-off ready — no clarifying questions left.",
+  "description": "User-invoked only. Builds a code-grounded, implementation-ready engineering spec through three gated phases: reconnaissance & alignment, a mid-draft outline-approval gate, then a fully-detailed spec with embedded decision records, alternative analysis, and fact-checking. Hand-off ready — no clarifying questions left.",
   "version": "1.0.0",
   "author": {
     "name": "z0rd0n88"

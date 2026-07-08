@@ -1,6 +1,6 @@
 ---
 name: spec-tacular
-description: "Turns a concept into an implementation-ready spec via three gated phases (recon, blueprint approval, full spec). Use when the user wants a rigorous spec, PRD, or design doc from an idea."
+description: "User-invoked only; never auto-trigger. Builds a code-grounded engineering spec: recon, outline-approval gate, full spec with decision records. Run only on explicit /spec-tacular."
 ---
 
 # Spec-tacular
@@ -8,6 +8,10 @@ description: "Turns a concept into an implementation-ready spec via three gated 
 Drive a concept from a vague idea to a specification an implementation team can
 execute **without a single clarifying question**. Run three phases in order.
 **Do not advance until the current phase is fully resolved.**
+
+**User-invoked only — do NOT auto-trigger.** Run this skill only when the user
+explicitly invokes it (`/spec-tacular`, or a direct request to spec something
+out). Do not activate it just because a message mentions a spec, plan, or design.
 
 ## Phase 1 — Reconnaissance & Alignment
 
