@@ -240,6 +240,26 @@
         "auto-triggered",
         "chain-of-skills"
       ]
+    },
+    {
+      "name": "spec-tacular",
+      "source": "./spec-tacular",
+      "description": "Turns a concept into an implementation-ready spec through three gated phases: reconnaissance & alignment, a blueprint approval gate, then a fully-detailed spec with decision records, alternative analysis, and fact-checking. Hand-off ready — no clarifying questions left.",
+      "version": "1.0.0",
+      "author": {
+        "name": "z0rd0n88"
+      },
+      "category": "productivity",
+      "keywords": [
+        "spec",
+        "specification",
+        "prd",
+        "design-doc",
+        "planning",
+        "requirements",
+        "decision-records",
+        "gated-workflow"
+      ]
     }
   ]
 }
