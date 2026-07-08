@@ -4,6 +4,7 @@ description: 'Use when brainstorming new products, features, or business directi
 allowed-tools:
   - Bash
   - Read
+  - Write
   - Glob
   - Grep
   - Agent
@@ -105,6 +106,9 @@ Unless `--no-demand`: one `Agent` call per finalist up to `--demand-top`, IN PAR
 
 ### Stage 5 — REPORT
 Assemble the final report per `references/ranking-and-synthesis.md` §Report: executive summary → **Safe Picks** and **Moonshots** (barbell, separate lists) → demand-evidence table → modal-region map → convergence & productive disagreement → what-to-validate-next (fake-door / LOI playbook pointers) → the mandatory human-final-cut disclaimer. Print verbatim as the final message. If `--write-to`: `mkdir -p` parent, write, prepend `Wrote: <absolute path>`. Suggest the follow-on pipeline: `idea-autopsy:iterate-to-v2` → `product-management:write-spec` / `to-prd` → `idea-autopsy:evaluate-proposal-harsh`.
+
+### Stage 6 — OFFER TO SAVE
+Skip this stage entirely when `--write-to` was given (the report is already on disk). Otherwise, after printing the report, prompt the user to save it — a report this size is lost to scrollback and context compaction if it only lives in the conversation. Ask (via AskUserQuestion when available, else a plain question) whether to save, suggesting a default path: `docs/ideas/<topic-slug>-nebula.md` relative to the repo root, or `<topic-slug>-nebula.md` in the cwd outside a repo. On yes: `mkdir -p` the parent, write the report verbatim, confirm with `Wrote: <absolute path>`; if the file already exists, refuse and ask for a different path or explicit overwrite confirmation (same guard as `--write-to` without `--force`). On no: end without writing.
 
 ## 5. Error handling
 

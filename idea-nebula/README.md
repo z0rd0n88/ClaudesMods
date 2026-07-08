@@ -41,6 +41,8 @@ GROUND    per-finalist live demand-check: ≥20-complaint threshold,
           vendor check, AI-kill-zone check  (--no-demand to skip)
 REPORT    Safe Picks + Moonshots (never merged), demand-evidence table,
           modal-region map, validate-next playbook, human final cut
+SAVE      offers to write the report to a file (default
+          docs/ideas/<topic-slug>-nebula.md) when --write-to wasn't given
 ```
 
 ## Relationship to other plugins

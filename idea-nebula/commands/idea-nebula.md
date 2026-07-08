@@ -14,6 +14,7 @@ The skill will:
 3. Rank via round-robin pairwise duels judged in BOTH orders (order-inconsistent verdicts = draws). No pointwise self-scores.
 4. Demand-check the top finalists in parallel against live web evidence (≥20-complaint threshold, vendor check, AI-kill-zone check).
 5. Report a barbell shortlist — Safe Picks + Moonshots, never one merged ranking — with demand evidence, the modal-region map, and an explicit human-final-cut disclaimer.
+6. Offer to save the report to a file (suggested default: `docs/ideas/<topic-slug>-nebula.md`) when `--write-to` wasn't given, so the shortlist survives scrollback and compaction.
 
 Common invocations:
 
