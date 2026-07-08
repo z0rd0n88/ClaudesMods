@@ -242,6 +242,26 @@
       ]
     },
     {
+      "name": "idea-nebula",
+      "source": "./idea-nebula",
+      "description": "Evidence-based brainstorming pipeline: four independent entropy-source generators (VS tails, ordinary personas, far-domain defixation, live demand mining) with mandatory boldness revision, blind pairwise-swap ranking, live demand grounding, and a barbell (safe + moonshot) shortlist.",
+      "version": "1.0.0",
+      "author": {
+        "name": "z0rd0n88"
+      },
+      "category": "productivity",
+      "keywords": [
+        "brainstorming",
+        "ideation",
+        "verbalized-sampling",
+        "demand-validation",
+        "diversity",
+        "defixation",
+        "pairwise-ranking",
+        "market-research"
+      ]
+    },
+    {
       "name": "spec-tacular",
       "source": "./spec-tacular",
       "description": "User-invoked only. Builds a code-grounded, implementation-ready engineering spec through three gated phases: reconnaissance & alignment, a mid-draft outline-approval gate, then a fully-detailed spec with embedded decision records, alternative analysis, and fact-checking. Hand-off ready — no clarifying questions left.",
