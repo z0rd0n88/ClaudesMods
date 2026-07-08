@@ -1,6 +1,6 @@
 ---
 name: i-cant-even
-description: User-invoked only. Do NOT auto-trigger. Run only when the user explicitly types `/i-cant-even` or says "i cant even". Evaluates a software design choice with full project context: orients on the codebase, grills the user, then delivers a recommendation memo with trade-offs.
+description: 'User-invoked only. Do NOT auto-trigger. Run only when the user explicitly types `/i-cant-even` or says "i cant even". Evaluates a software design choice with full project context: orients on the codebase, grills the user, then delivers a recommendation memo with trade-offs.'
 allowed-tools:
   - Bash
   - Read

@@ -1,7 +1,7 @@
 {
   "name": "i-cant-even",
   "description": "Design-decision advisor. Orients on the codebase, grills you, runs a 4-persona panel (conservative + balanced + aggressive + critical-thinker), then delivers a one-screen recommendation memo.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": {
     "name": "z0rd0n88"
   },

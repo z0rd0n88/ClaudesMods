@@ -1,6 +1,6 @@
 ---
 name: daily-loop
-description: Session-start routing table (auto-triggered, not user-invocable): feature → brainstorming+plans+tdd; returning → recall; 3+ steps → planning-with-files; pre-merge → multi-agent-review-loop.
+description: "Session-start routing table (auto-triggered, not user-invocable): feature → brainstorming+plans+tdd; returning → recall; 3+ steps → planning-with-files; pre-merge → multi-agent-review-loop."
 ---
 
 # Daily Loop — Workflow Routing Table
