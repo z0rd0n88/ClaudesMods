@@ -207,6 +207,23 @@
       ]
     },
     {
+      "name": "edit-agents",
+      "source": "./edit-agents",
+      "description": "Toggle Claude Code agents on/off by moving .md files between agents/ and a sibling agents-parked/ dir (agents/disabled/ does not hide agents because agents/ is scanned recursively).",
+      "version": "1.0.0",
+      "author": {
+        "name": "z0rd0n88"
+      },
+      "category": "productivity",
+      "keywords": [
+        "agents",
+        "toggle",
+        "context-management",
+        "roster",
+        "meta"
+      ]
+    },
+    {
       "name": "daily-loop",
       "source": "./daily-loop",
       "description": "Auto-triggered workflow routing table \u2014 session-type \u2192 skill-chain, plus brainstorm routing. Not user-invocable.",

@@ -1,0 +1,16 @@
+# edit-agents categories — copy to $XDG_CONFIG_HOME/edit-agents/categories
+# (or set $CLAUDE_EDIT_AGENTS_CATEGORIES to point somewhere else).
+#
+# Format: `category-name: agent1 agent2 ...`
+# Names must match agent file basenames (without `.md`) in your <root>/ or <root>-parked/.
+# Blank lines and `#` comments are ignored.
+#
+# The examples below are illustrative — replace with the agents you actually have.
+
+review:   architect-review code-explorer commit-guardian critical-thinking
+security: crypto-security-reviewer penetration-tester security-engineer
+impl:     backend-developer kotlin-specialist blockchain-developer
+docs:     api-documenter technical-writer diagram-architect
+ops:      debug error-detective database-optimization
+research: research-orchestrator competitive-analyst
+meta:     agent-installer agent-organizer context-manager
