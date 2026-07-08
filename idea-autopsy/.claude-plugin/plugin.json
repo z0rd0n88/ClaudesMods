@@ -1,7 +1,7 @@
 {
   "name": "idea-autopsy",
   "description": "Four-skill idea-review loop with on-disk state: stress-test (3 lenses), iterate to v2 (change-vs-hedge enforced), deliver Invest/Proceed/Pivot/Skip verdict, and strategize forward from a verdict. Findings pass an independent verification stage before they count; provenance-tagged; optional web claim-checking via --verify-claims.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": {
     "name": "z0rd0n88"
   },

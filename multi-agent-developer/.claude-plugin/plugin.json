@@ -1,7 +1,7 @@
 {
   "name": "multi-agent-developer",
   "description": "Manager-led TDD dev team (≤4 Opus agents) that debates a spec across RED→GREEN→REFACTOR rounds, synthesizes via an architect agent, materializes a worktree, and verifies via tests. Plus a one-time setup skill.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": {
     "name": "z0rd0n88"
   },

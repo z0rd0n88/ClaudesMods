@@ -4,7 +4,7 @@ Shared workflow library. Wrappers at `<repo>/.claude/skills/<slug>-total-review/
 
 ## Shared primitives
 
-This skill is one of three (alongside `xan-multi-agent-review` and `xan-multi-agent-developer`) that share these primitives — read the refs once and apply them wherever they appear below:
+This skill is one of three (alongside `multi-agent-review` and `multi-agent-developer`) that share these primitives — read the refs once and apply them wherever they appear below:
 
 - [`~/.claude/refs/multi-agent/fanout-consolidation.md`](../../refs/multi-agent/fanout-consolidation.md) — parallel `Agent` fan-out contract, dedupe, and the cross-axis severity budget. The *Consolidation rules* section below is a project-specific layer on top of this ref.
 - [`~/.claude/refs/multi-agent/exclusion-list.md`](../../refs/multi-agent/exclusion-list.md) — tracker-issue exclusion-list discipline (the single highest-leverage technique against duplicate-finding noise in recurring sweeps). Step 2 below is the project-tracker binding of that ref.

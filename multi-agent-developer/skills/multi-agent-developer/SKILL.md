@@ -22,9 +22,9 @@ Orchestrate a TDD-disciplined dev team to implement a spec, PRD, or issue. Count
 
 This skill is one of three (alongside `total-review` and `multi-agent-review`) that share these primitives:
 
-- [`refs/multi-agent/fanout-consolidation.md`](../../refs/multi-agent/fanout-consolidation.md) — the parallel-fan-out and synthesis contract that the RED/GREEN/REFACTOR rounds and `ecc-code-architect` synthesis pass instantiate.
-- [`refs/multi-agent/agent-catalog-lookup.md`](../../refs/multi-agent/agent-catalog-lookup.md) — how Phase 5.4 auto-selection and `--agents <csv>` resolve names against the project active catalog and the user-scope parked tier.
-- [`refs/multi-agent/spec-injection.md`](../../refs/multi-agent/spec-injection.md) — the spec IS the target of this skill; the specialist briefs MUST carry it under the canonical heading from the ref so "the change must satisfy this" is a first-class round constraint, not a paraphrased summary.
+- [`~/.claude/refs/multi-agent/fanout-consolidation.md`](../../refs/multi-agent/fanout-consolidation.md) — the parallel-fan-out and synthesis contract that the RED/GREEN/REFACTOR rounds and `ecc-code-architect` synthesis pass instantiate.
+- [`~/.claude/refs/multi-agent/agent-catalog-lookup.md`](../../refs/multi-agent/agent-catalog-lookup.md) — how Phase 5.4 auto-selection and `--agents <csv>` resolve names against the project active catalog and the user-scope parked tier.
+- [`~/.claude/refs/multi-agent/spec-injection.md`](../../refs/multi-agent/spec-injection.md) — the spec IS the target of this skill; the specialist briefs MUST carry it under the canonical heading from the ref so "the change must satisfy this" is a first-class round constraint, not a paraphrased summary.
 
 The orchestrating Claude **IS** the manager (no nested manager agent). The manager:
 

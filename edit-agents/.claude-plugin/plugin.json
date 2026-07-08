@@ -1,0 +1,12 @@
+{
+  "name": "edit-agents",
+  "description": "Toggle Claude Code agents on/off by moving their .md file between the active agents dir and a sibling parked/ dir OUTSIDE the recursive-scan tree. Bundled shell script does the moves safely.",
+  "version": "1.0.0",
+  "author": {
+    "name": "z0rd0n88"
+  },
+  "homepage": "https://github.com/z0rd0n88/ClaudesMods/tree/main/edit-agents",
+  "repository": "https://github.com/z0rd0n88/ClaudesMods",
+  "license": "MIT",
+  "keywords": ["agents", "toggle", "parking", "enable-disable", "context-management", "cli-utility"]
+}

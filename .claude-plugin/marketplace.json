@@ -7,7 +7,7 @@
   "homepage": "https://github.com/z0rd0n88/ClaudesMods",
   "repository": "https://github.com/z0rd0n88/ClaudesMods",
   "metadata": {
-    "description": "z0rd0n88's Claude Code mods — plugins, skills, and tooling.",
+    "description": "z0rd0n88's Claude Code mods \u2014 plugins, skills, and tooling.",
     "version": "1.0.0"
   },
   "plugins": [
@@ -15,91 +15,232 @@
       "name": "idea-autopsy",
       "source": "./idea-autopsy",
       "description": "Three-skill idea-review loop: stress-test holes, iterate to v2, then deliver an invest/skip verdict.",
-      "version": "1.0.0",
-      "author": { "name": "z0rd0n88" },
+      "version": "1.2.1",
+      "author": {
+        "name": "z0rd0n88"
+      },
       "category": "productivity",
-      "keywords": ["critique", "review", "verdict", "stress-test", "iteration", "decision-making"]
+      "keywords": [
+        "critique",
+        "review",
+        "verdict",
+        "stress-test",
+        "iteration",
+        "decision-making"
+      ]
     },
     {
       "name": "inventory",
       "source": "./inventory",
-      "description": "Generate .CLAUDE.inventory.md — a per-project audit of every Claude Code automation, tagged installed vs custom.",
+      "description": "Generate .CLAUDE.inventory.md \u2014 a per-project audit of every Claude Code automation, tagged installed vs custom.",
       "version": "1.0.0",
-      "author": { "name": "z0rd0n88" },
+      "author": {
+        "name": "z0rd0n88"
+      },
       "category": "productivity",
-      "keywords": ["inventory", "audit", "introspection", "automation", "skills", "hooks", "plugins", "agents", "mcp"]
+      "keywords": [
+        "inventory",
+        "audit",
+        "introspection",
+        "automation",
+        "skills",
+        "hooks",
+        "plugins",
+        "agents",
+        "mcp"
+      ]
     },
     {
       "name": "total-review",
       "source": "./total-review",
       "description": "Parallel multi-agent code review pattern. Fans specialised reviewers along clean layer boundaries with exclusion-list dedup against the issue tracker.",
-      "version": "1.0.0",
-      "author": { "name": "z0rd0n88" },
+      "version": "1.0.1",
+      "author": {
+        "name": "z0rd0n88"
+      },
       "category": "productivity",
-      "keywords": ["code-review", "multi-agent", "parallel", "fan-out", "architecture", "security-review", "hexagonal", "deduplication"]
+      "keywords": [
+        "code-review",
+        "multi-agent",
+        "parallel",
+        "fan-out",
+        "architecture",
+        "security-review",
+        "hexagonal",
+        "deduplication"
+      ]
     },
     {
       "name": "multi-agent-review",
       "source": "./multi-agent-review",
-      "description": "Parallel multi-agent review with synthesizer dedup + cross-axis severity budget. Targets PR/dir/file/spec/diff/slices. Ships a review→fix→re-review loop wrapper too.",
-      "version": "1.0.0",
-      "author": { "name": "z0rd0n88" },
+      "description": "Parallel multi-agent review with synthesizer dedup + cross-axis severity budget. Targets PR/dir/file/spec/diff/slices. Ships a review\u2192fix\u2192re-review loop wrapper too.",
+      "version": "1.1.0",
+      "author": {
+        "name": "z0rd0n88"
+      },
       "category": "productivity",
-      "keywords": ["code-review", "multi-agent", "parallel", "fan-out", "synthesizer", "review-loop", "pr-review", "dedup", "severity-budget"]
+      "keywords": [
+        "code-review",
+        "multi-agent",
+        "parallel",
+        "fan-out",
+        "synthesizer",
+        "review-loop",
+        "pr-review",
+        "dedup",
+        "severity-budget"
+      ]
     },
     {
       "name": "i-cant-even",
       "source": "./i-cant-even",
       "description": "Design-decision advisor. Orients on the codebase, grills you, runs a 4-persona panel, delivers a one-screen recommendation memo.",
       "version": "1.0.0",
-      "author": { "name": "z0rd0n88" },
+      "author": {
+        "name": "z0rd0n88"
+      },
       "category": "productivity",
-      "keywords": ["design", "architecture-decision", "trade-offs", "advisor", "personas", "panel", "recommendation"]
+      "keywords": [
+        "design",
+        "architecture-decision",
+        "trade-offs",
+        "advisor",
+        "personas",
+        "panel",
+        "recommendation"
+      ]
     },
     {
       "name": "multi-agent-developer",
       "source": "./multi-agent-developer",
-      "description": "Manager-led TDD dev team (≤4 Opus agents) that debates a spec across RED→GREEN→REFACTOR rounds, synthesizes via an architect, materializes a worktree, runs tests. Plus a one-time setup skill.",
-      "version": "1.0.0",
-      "author": { "name": "z0rd0n88" },
+      "description": "Manager-led TDD dev team (\u22644 Opus agents) that debates a spec across RED\u2192GREEN\u2192REFACTOR rounds, synthesizes via an architect, materializes a worktree, runs tests. Plus a one-time setup skill.",
+      "version": "1.1.0",
+      "author": {
+        "name": "z0rd0n88"
+      },
       "category": "productivity",
-      "keywords": ["multi-agent", "tdd", "developer", "dev-team", "red-green-refactor", "worktree", "spec-driven", "implementation"]
+      "keywords": [
+        "multi-agent",
+        "tdd",
+        "developer",
+        "dev-team",
+        "red-green-refactor",
+        "worktree",
+        "spec-driven",
+        "implementation"
+      ]
     },
     {
       "name": "code-rinse-repeat",
       "source": "./code-rinse-repeat",
-      "description": "End-to-end spec→APPROVE orchestrator. Composes multi-agent-developer (build) with multi-agent-review (review-fix loop). Lather, rinse, repeat — for code.",
+      "description": "End-to-end spec\u2192APPROVE orchestrator. Composes multi-agent-developer (build) with multi-agent-review (review-fix loop). Lather, rinse, repeat \u2014 for code.",
       "version": "1.1.0",
-      "author": { "name": "z0rd0n88" },
+      "author": {
+        "name": "z0rd0n88"
+      },
       "category": "productivity",
-      "keywords": ["multi-agent", "tdd", "end-to-end", "review-loop", "spec-to-pr", "orchestrator", "build-review-fix"]
+      "keywords": [
+        "multi-agent",
+        "tdd",
+        "end-to-end",
+        "review-loop",
+        "spec-to-pr",
+        "orchestrator",
+        "build-review-fix"
+      ]
     },
     {
       "name": "baton",
       "source": "./baton",
-      "description": "Long-running multi-phase build orchestrator: baton-runner queues specs as implement→review→fix units, baton-runner-multi-agent uses multi-agent dev teams per phase, baton-pass writes session handoff notes.",
+      "description": "Long-running multi-phase build orchestrator: baton-runner queues specs as implement\u2192review\u2192fix units, baton-runner-multi-agent uses multi-agent dev teams per phase, baton-pass writes session handoff notes.",
       "version": "1.0.0",
-      "author": { "name": "z0rd0n88" },
+      "author": {
+        "name": "z0rd0n88"
+      },
       "category": "productivity",
-      "keywords": ["orchestrator", "multi-phase", "queue", "session-handoff", "baton-pass", "resumability", "long-running", "multi-agent"]
+      "keywords": [
+        "orchestrator",
+        "multi-phase",
+        "queue",
+        "session-handoff",
+        "baton-pass",
+        "resumability",
+        "long-running",
+        "multi-agent"
+      ]
     },
     {
       "name": "scratchpad",
       "source": "./scratchpad",
       "description": "User-invoked /scratchpad capture: append items (or check them off) on a configured GitHub checkbox issue. Smart section placement, dup-detection, never closes the issue.",
       "version": "1.0.0",
-      "author": { "name": "z0rd0n88" },
+      "author": {
+        "name": "z0rd0n88"
+      },
       "category": "productivity",
-      "keywords": ["scratchpad", "capture", "backlog", "ideas", "github-issue", "todo", "research"]
+      "keywords": [
+        "scratchpad",
+        "capture",
+        "backlog",
+        "ideas",
+        "github-issue",
+        "todo",
+        "research"
+      ]
     },
     {
       "name": "idea-panel",
       "source": "./idea-panel",
       "description": "Parallel panel of thinking-skills mental-model lenses generates candidate ideas for a topic, then a synthesizer ranks and dedupes them into one shortlist. Generative sibling of multi-agent-review.",
       "version": "1.0.0",
-      "author": { "name": "z0rd0n88" },
+      "author": {
+        "name": "z0rd0n88"
+      },
       "category": "productivity",
-      "keywords": ["brainstorming", "ideation", "thinking-skills", "mental-models", "synthesis", "idea-generation"]
+      "keywords": [
+        "brainstorming",
+        "ideation",
+        "thinking-skills",
+        "mental-models",
+        "synthesis",
+        "idea-generation"
+      ]
+    },
+    {
+      "name": "daily-loop",
+      "source": "./daily-loop",
+      "description": "Auto-triggered workflow routing table \u2014 session-type \u2192 skill-chain, plus brainstorm routing. Not user-invocable.",
+      "version": "1.0.0",
+      "author": {
+        "name": "z0rd0n88"
+      },
+      "category": "productivity",
+      "keywords": [
+        "workflow",
+        "routing",
+        "meta",
+        "session-orientation",
+        "auto-triggered",
+        "chain-of-skills"
+      ]
+    },
+    {
+      "name": "edit-agents",
+      "source": "./edit-agents",
+      "description": "Toggle Claude Code agents on/off by moving their .md file between active-scan dir and sibling parked/ dir OUTSIDE the recursive-scan tree.",
+      "version": "1.0.0",
+      "author": {
+        "name": "z0rd0n88"
+      },
+      "category": "productivity",
+      "keywords": [
+        "agents",
+        "toggle",
+        "parking",
+        "enable-disable",
+        "context-management",
+        "cli-utility"
+      ]
     }
   ]
 }

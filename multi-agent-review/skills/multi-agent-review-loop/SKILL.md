@@ -73,7 +73,7 @@ multi-agent-review-loop 203 --no-smoke
 
 - **`--max-iterations`**: **3**. Most projects stabilize in 1–2 rounds; 3 catches genuine fix follow-ons; beyond that the reviewers are usually nitpicking. Hard ceiling is **8** — refuse anything higher (a `--max-iterations 50` request indicates a misunderstanding of the loop's purpose).
 - **Action floor**: by default the coordinator MUST address every CRITICAL and HIGH; MEDIUM is coordinator's judgment; LOW is "note in PR comment, do not iterate on." With `--high-and-up-only`, MEDIUM and LOW are auto-deferred without prompting.
-- **Smoke test gate**: re-run the project's live smoke ONLY if a fix touched code paths the smoke exercises. The set of smoke-relevant paths is project-specific — typical examples: external-connector loops, request-parse paths, allowlist/permission filters, metric-increment sites, top-level route handlers. Skip the smoke when fixes only touched paths the smoke doesn't cover. `--no-smoke` opts out entirely.
+- **Smoke test gate**: re-run the project's live smoke ONLY if a fix touched code paths the smoke exercises (project-specific — for VistaTrader: connector loop, parse path, allowlist filter, metric increment, route handlers). Skip otherwise. `--no-smoke` opts out entirely.
 - **Inner skill name**: `multi-agent-review`. If absent at both project and user scope, hard-fail with "this loop wraps `multi-agent-review`; activate that skill first."
 
 ## 5. Workflow
@@ -131,7 +131,7 @@ For iteration `N = 1, 2, …, maxIterations`:
      - any reviewer disagreements
      - any tool-availability failures (e.g. "Agent tool not exposed to subagent — reviewers ran inline")
      ```
-   - The explicit fallback chain for the inner skill's invocation grammar: `args="<n>"` → `args="PR <n>"` → no-args. If all fail, list the inner skill's installed location (e.g. `~/.claude/plugins/.../multi-agent-review/skills/multi-agent-review/SKILL.md`) and stop.
+   - The explicit fallback chain for the inner skill's invocation grammar: `args="<n>"` → `args="PR <n>"` → no-args. If all fail, list the skill files at `/home/alex/VistaTrader/.claude/skills/multi-agent-review/` (or equivalent) and stop.
 
 3. **Subagent-dispatch precondition check**: the brief MUST instruct the subagent to verify the `Agent` tool is available in its environment before invoking the inner skill. If it is not, the subagent MUST emit a `## Notes` line saying so and execute the four reviewer lanes inline (one agent role-playing four, scoped strictly to the reviewer agent files), then synthesize. The coordinator should weight findings from an inline-fallback round less than a true-parallel round (treat one HIGH as one HIGH, but don't trust "no disagreements" — the same author found all four lanes).
 
@@ -155,15 +155,17 @@ When the subagent returns:
 For each finding the coordinator decided to fix:
 
 1. Edit the affected file(s) in the worktree using the `Edit` / `Write` tools.
-2. After all edits for the round are in, run the project's unit tests for the affected module. Read the project's CLAUDE.md or the inner skill's notes for the test command (examples: `pytest path/to/module`, `./gradlew :module:test`, `npm test -- path/to/module`).
+2. After all edits for the round are in, run the project's unit tests for the affected module:
+   - VistaTrader: `./gradlew :aggro:test` (or the appropriate module).
+   - Generic: read the project's CLAUDE.md or the inner skill's notes for the test command.
 3. If tests regress → STOP. Revert (`git checkout -- <paths>`), emit a "test regression on round N" report, surface the failing test output to the user, do NOT push.
 4. If a fix touched code paths the live smoke covers AND `--no-smoke` is not set → run the smoke. If smoke fails, same treatment as test regression.
-5. Regenerate any auto-maintained docs if any tracked file was added/renamed (e.g. `ARCH.md` generators wired into a pre-commit hook). Check the project's CLAUDE.md for the regen command.
+5. Regenerate any auto-maintained docs (project-specific: VistaTrader `ARCH.md` via `python3 .githooks/gen_arch.py --root .` if any tracked file was added/renamed).
 
 ### 5.6 Per-iteration: commit + push
 
 1. `git add` the specific touched paths (do not use `git add -A`).
-2. Commit with `git commit -m "fix(<scope>): address review round N findings — <one-line summary>"`. If the project's pre-commit hook is known to fail silently under the Claude Code harness (a documented gotcha in some setups), pre-stage any auto-regenerated docs by hand and use `git -c core.hooksPath=/dev/null commit …` as the documented escape hatch.
+2. Commit with `git -c core.hooksPath=/dev/null commit -m "fix(<scope>): address review round N findings — <one-line summary>"` — the `core.hooksPath=/dev/null` is the standing VistaTrader gotcha (pre-commit hooks fail silently under the Claude Code harness; manual ARCH.md regen in §5.5 is the substitute). For other projects, drop the override.
 3. The commit body should list the addressed findings by `file_path:line` so the PR diff history reflects the review-iteration trail.
 4. `git push` to update the PR.
 5. Increment `iterationsCompleted` and update `findingsFixedThisRun` counters.
@@ -239,5 +241,5 @@ Additionally:
 
 ## 8. Composition with other skills
 
-- **Inside this loop, the coordinator MAY use** `tdd`, `diagnose`, language-specific reviewers (`kotlin-review`, `python-review`, …), or project-specific skills when applying fixes. Using `multi-agent-review` itself outside the loop's subagent dispatch is fine for a one-off sanity check after a controversial fix.
+- **Inside this loop, the coordinator MAY use** `tdd`, `diagnose`, `kotlin-review`, project-specific skills (e.g. VistaTrader `aggro-new-exchange-connector`) when applying fixes. Using `multi-agent-review` itself outside the loop's subagent dispatch is fine for a one-off sanity check after a controversial fix.
 - **This skill MUST NOT be invoked from inside another loop skill** (e.g. `baton-runner`, `multi-agent-developer`). Nested loops create non-deterministic finish conditions and exponential agent fan-out.

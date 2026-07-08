@@ -1,0 +1,12 @@
+{
+  "name": "daily-loop",
+  "description": "Workflow routing skill (auto-triggered, not user-invocable) that maps session type to the right skill chain: new feature → brainstorming+plans+tdd; returning work → recall; 3+ steps → planning-with-files; pre-merge → multi-agent-review-loop.",
+  "version": "1.0.0",
+  "author": {
+    "name": "z0rd0n88"
+  },
+  "homepage": "https://github.com/z0rd0n88/ClaudesMods/tree/main/daily-loop",
+  "repository": "https://github.com/z0rd0n88/ClaudesMods",
+  "license": "MIT",
+  "keywords": ["workflow", "routing", "meta", "session-orientation", "auto-triggered", "chain-of-skills"]
+}
