@@ -23,7 +23,7 @@ allowed-tools:
 |---|---|---|
 | **XMAD** | `multi-agent-developer` | TDD-disciplined multi-agent dev team (≤4 Opus agents) that debates a spec across RED→GREEN→REFACTOR rounds and materializes a worktree. |
 | **XMAR** | `multi-agent-review` | Parallel multi-perspective review pass (architect, critical-thinking, silent-failure, security by default), merged by a synthesizer agent into one prioritized report. |
-| **XMAR-Loop** | `multi-agent-review-loop` | Iterative wrapper that runs XMAR → coordinator-applies-fixes → re-XMAR on an **existing PR** until APPROVE or a max-iterations cap. |
+| **XMAR-Loop** | `multi-agent-review pr <ref> --yes` | The `multi-agent-review` skill's loop mode: XMAR → coordinator-applies-fixes → re-XMAR on an **existing PR** until APPROVE or a max-iterations cap. |
 
 `code-rinse-repeat` is the next composition up: XMAD-then-XMAR-Loop, on a **spec** rather than an existing PR.
 
@@ -53,7 +53,7 @@ Trigger phrases:
 
 Do NOT use for:
 - A spec you only want **built** (no review loop) — use `multi-agent-developer` directly.
-- An **existing PR** you want review-looped — use `multi-agent-review-loop` directly.
+- An **existing PR** you want review-looped — use `multi-agent-review pr <ref> --yes` directly.
 - A simple bug fix where the spec is one paragraph — TDD overhead isn't worth it; do it in-conversation.
 - A target where you don't intend to apply fixes — the loop only makes sense when the coordinator will actually iterate.
 
@@ -120,7 +120,7 @@ code-rinse-repeat ./specs/X.md --slug-suffix v2
 
 ## 4. Defaults
 
-- **`--max-iterations`**: **3**. Same logic as `multi-agent-review-loop` — most builds stabilize in 1–2 review rounds; round 3 catches genuine follow-ons; beyond that reviewers are nitpicking. Hard ceiling **8**.
+- **`--max-iterations`**: **3**. Same logic as `multi-agent-review`'s looping `pr` mode — most builds stabilize in 1–2 review rounds; round 3 catches genuine follow-ons; beyond that reviewers are nitpicking. Hard ceiling **8**.
 - **`--allow-rebuild`**: **0**. By default a CRITICAL architectural finding does NOT trigger a rebuild — the coordinator either fixes in place or escalates. Set to 1 or 2 to allow rebuilds (slow + expensive; use only when the spec itself was likely the problem).
 - **`--max-wall-minutes`**: **90**. Total wall-clock from skill invocation to ship report. Most spec→APPROVE runs land in 30–60 min; 90 catches one rebuild or a stubborn round 3. Hard ceiling **480** (8 h).
 - **`--max-cost-usd`**: **25**. Estimated agent-spend across XMAD + every XMAR pass. A single XMAR round on a small worktree is ~$1–3; a full XMAD pass is ~$5–10. The default covers build + 3 review rounds with headroom. Hard ceiling **500**.
@@ -609,7 +609,7 @@ This skill is the **end-to-end** layer in the multi-agent stack:
 |---|---|---|
 | Spec → code | `multi-agent-developer` | TDD build, one pass |
 | Code → findings | `multi-agent-review` | Parallel review, one pass |
-| Findings → APPROVE | `multi-agent-review-loop` | Review-fix loop on existing PR |
+| Findings → APPROVE | `multi-agent-review pr <ref> --yes` | Review-fix loop on existing PR |
 | Spec → APPROVE | **`code-rinse-repeat`** | Build + review-fix loop, end-to-end |
 
 If you need a sequential queue of code-rinse-repeat targets across multiple specs, that's `baton-runner-multi-agent`'s job — it can dispatch this skill as the per-unit work.

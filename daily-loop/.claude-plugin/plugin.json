@@ -1,7 +1,7 @@
 {
   "name": "daily-loop",
   "description": "Session-start workflow routing table (auto-triggered, not user-invocable) that maps session type to the correct skill chain.",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "author": {
     "name": "z0rd0n88"
   },

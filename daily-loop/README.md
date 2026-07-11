@@ -9,7 +9,7 @@ New feature      → superpowers:brainstorming
                  → superpowers:verification-before-completion
 Returning work   → read memory/MEMORY.md + recent session-data/ first, then resume
 3+ tool calls    → planning-with-files (task_plan.md before first edit)
-Pre-merge / PR   → multi-agent-review-loop as the quality gate
+Pre-merge / PR   → multi-agent-review pr <ref> --yes as the quality gate
 Stuck / uncertain→ thinking-skills:thinking-model-router
 Brainstorm       → idea-panel (products/directions) | superpowers:brainstorming (features)
                  | grill-with-docs (attack an existing plan)
@@ -24,7 +24,7 @@ Fewer, non-contradictory routing rules produce better outcomes than a long list 
 ## Composition
 
 Names the following as canonical downstream targets:
-- `multi-agent-review-loop` — this marketplace, plugin `multi-agent-review`
+- `multi-agent-review pr <ref> --yes` — this marketplace, plugin `multi-agent-review`
 - `idea-panel` — this marketplace, plugin `idea-panel`
 - `planning-with-files` — openskills cohort
 - `superpowers:brainstorming`, `superpowers:writing-plans`, `superpowers:test-driven-development`, `superpowers:verification-before-completion`
