@@ -7,7 +7,7 @@
   "homepage": "https://github.com/z0rd0n88/ClaudesMods",
   "repository": "https://github.com/z0rd0n88/ClaudesMods",
   "metadata": {
-    "description": "z0rd0n88's Claude Code mods \u2014 plugins, skills, and tooling.",
+    "description": "z0rd0n88's Claude Code mods — plugins, skills, and tooling.",
     "version": "1.0.0"
   },
   "plugins": [
@@ -32,7 +32,7 @@
     {
       "name": "inventory",
       "source": "./inventory",
-      "description": "Generate .CLAUDE.inventory.md \u2014 a per-project audit of every Claude Code automation, tagged installed vs custom.",
+      "description": "Generate .CLAUDE.inventory.md — a per-project audit of every Claude Code automation, tagged installed vs custom.",
       "version": "1.0.0",
       "author": {
         "name": "z0rd0n88"
@@ -73,7 +73,7 @@
     {
       "name": "multi-agent-review",
       "source": "./multi-agent-review",
-      "description": "Parallel multi-agent review with synthesizer dedup + cross-axis severity budget. Targets PR/dir/file/spec/diff/slices. Ships a review\u2192fix\u2192re-review loop wrapper too.",
+      "description": "Parallel multi-agent review with synthesizer dedup + cross-axis severity budget. Targets PR/dir/file/spec/diff/slices. Ships a review→fix→re-review loop wrapper too.",
       "version": "1.1.0",
       "author": {
         "name": "z0rd0n88"
@@ -113,7 +113,7 @@
     {
       "name": "multi-agent-developer",
       "source": "./multi-agent-developer",
-      "description": "Manager-led TDD dev team (\u22644 Opus agents) that debates a spec across RED\u2192GREEN\u2192REFACTOR rounds, synthesizes via an architect, materializes a worktree, runs tests. Plus a one-time setup skill.",
+      "description": "Manager-led TDD dev team (≤4 Opus agents) that debates a spec across RED→GREEN→REFACTOR rounds, synthesizes via an architect, materializes a worktree, runs tests. Plus a one-time setup skill.",
       "version": "1.1.0",
       "author": {
         "name": "z0rd0n88"
@@ -133,7 +133,7 @@
     {
       "name": "code-rinse-repeat",
       "source": "./code-rinse-repeat",
-      "description": "End-to-end spec\u2192APPROVE orchestrator. Composes multi-agent-developer (build) with multi-agent-review (review-fix loop). Lather, rinse, repeat \u2014 for code.",
+      "description": "End-to-end spec→APPROVE orchestrator. Composes multi-agent-developer (build) with multi-agent-review (review-fix loop). Lather, rinse, repeat — for code.",
       "version": "1.1.0",
       "author": {
         "name": "z0rd0n88"
@@ -152,7 +152,7 @@
     {
       "name": "baton",
       "source": "./baton",
-      "description": "Long-running multi-phase build orchestrator: baton-runner queues specs as implement\u2192review\u2192fix units, baton-runner-multi-agent uses multi-agent dev teams per phase, baton-pass writes session handoff notes.",
+      "description": "Long-running multi-phase build orchestrator: baton-runner queues specs as implement→review→fix units, baton-runner-multi-agent uses multi-agent dev teams per phase, baton-pass writes session handoff notes.",
       "version": "1.0.0",
       "author": {
         "name": "z0rd0n88"
@@ -226,7 +226,7 @@
     {
       "name": "daily-loop",
       "source": "./daily-loop",
-      "description": "Auto-triggered workflow routing table \u2014 session-type \u2192 skill-chain, plus brainstorm routing. Not user-invocable.",
+      "description": "Auto-triggered workflow routing table — session-type → skill-chain, plus brainstorm routing. Not user-invocable.",
       "version": "1.0.1",
       "author": {
         "name": "z0rd0n88"
@@ -264,7 +264,7 @@
     {
       "name": "spec-tacular",
       "source": "./spec-tacular",
-      "description": "User-invoked only. Builds a code-grounded, implementation-ready engineering spec through three gated phases: reconnaissance & alignment, a mid-draft outline-approval gate, then a fully-detailed spec with embedded decision records, alternative analysis, and fact-checking. Hand-off ready \u2014 no clarifying questions left.",
+      "description": "User-invoked only. Builds a code-grounded, implementation-ready engineering spec through three gated phases: reconnaissance & alignment, a mid-draft outline-approval gate, then a fully-detailed spec with embedded decision records, alternative analysis, and fact-checking. Hand-off ready — no clarifying questions left.",
       "version": "1.0.1",
       "author": {
         "name": "z0rd0n88"
@@ -279,6 +279,26 @@
         "requirements",
         "decision-records",
         "gated-workflow"
+      ]
+    },
+    {
+      "name": "llm-fit-check",
+      "source": "./llm-fit-check",
+      "description": "Right-sizes model + effort per prompt: a UserPromptSubmit hook blocks when under-powered on a heavy task, warns when over-powered, silent on a match; /model-route gives an on-demand recommendation from the same shared engine.",
+      "version": "1.0.0",
+      "author": {
+        "name": "z0rd0n88"
+      },
+      "category": "productivity",
+      "keywords": [
+        "model-routing",
+        "effort",
+        "cost",
+        "latency",
+        "hook",
+        "user-prompt-submit",
+        "model-selection",
+        "guardrail"
       ]
     }
   ]
