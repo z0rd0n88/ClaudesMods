@@ -97,3 +97,8 @@ lfc_sidecar_read_model() {
   local p; p="$(lfc_sidecar_path "${1:-}")"
   if [ -f "$p" ]; then jq -r '.model // ""' "$p" 2>/dev/null; else echo ""; fi
 }
+
+lfc_sidecar_read_effort() {
+  local p; p="$(lfc_sidecar_path "${1:-}")"
+  if [ -f "$p" ]; then jq -r '.effort // ""' "$p" 2>/dev/null; else echo ""; fi
+}

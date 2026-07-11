@@ -70,3 +70,10 @@ bash hooks/test.sh    # → SUMMARY: PASS=43 FAIL=0, exit 0
   the plugin dir — session sidecars and the debug log survive plugin updates.
 - The `ConfigChange` event is undocumented, so `track-model.sh` ships **unwired**;
   `classify.sh` self-heals the current model by reading the transcript instead.
+- **Effort resolution order:** `payload .effort.level` → `$CLAUDE_EFFORT` → **sidecar**
+  (seeded by `session-init.sh` from `settings.json` `effortLevel`). Some harness
+  versions don't deliver effort to the hook payload/env; the seeded sidecar is the
+  reliable floor, and the payload/env take precedence the moment the harness starts
+  delivering a live value. Caveat: the sidecar reflects the *startup* `effortLevel`, so
+  a mid-session `/effort` change isn't seen until the harness delivers effort natively
+  (would need the undocumented `ConfigChange`).

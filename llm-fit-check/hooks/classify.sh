@@ -25,6 +25,14 @@ tpath="$(printf '%s' "$payload" | jq -r '.transcript_path // ""' 2>/dev/null)"
 # Empty prompt (e.g. a slash-command pass-through) -> nothing to classify.
 [ -z "${prompt// /}" ] && exit 0
 
+# --- current effort: payload -> $CLAUDE_EFFORT -> sidecar --------------------
+# The harness does not always deliver effort to the hook (payload .effort.level
+# and $CLAUDE_EFFORT can both be empty at hook time). session-init.sh seeds the
+# sidecar with the configured effortLevel, so it is the reliable floor. Payload
+# and env still take precedence above, so this self-corrects the moment the
+# harness starts delivering a live effort value.
+[ -z "$effort" ] && effort="$(lfc_sidecar_read_effort "$sid")"
+
 # --- current model: sidecar, self-healed by a best-effort transcript read ----
 model="$(lfc_sidecar_read_model "$sid")"
 if [ -n "$tpath" ] && [ -f "$tpath" ]; then
