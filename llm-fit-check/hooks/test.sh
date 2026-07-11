@@ -210,6 +210,10 @@ eq "$(effort_of effB)" "high" "payload effort overrides sidecar"
 seed effC claude-opus-4-8 ""
 run_classify effC 'add a small feature to the parser' '' '' >/dev/null
 eq "$(effort_of effC)" "" "no payload+no sidecar effort stays unknown"
+# N4: middle rung — $CLAUDE_EFFORT wins over the sidecar when the payload is empty
+seed effD claude-opus-4-8 low
+( export CLAUDE_EFFORT=xhigh; run_classify effD 'add a small feature to the parser' '' '' >/dev/null )
+eq "$(effort_of effD)" "xhigh" "\$CLAUDE_EFFORT overrides sidecar (middle rung)"
 
 hr; echo "== K. lfc_log rotation at threshold =="
 if (
