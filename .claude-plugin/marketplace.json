@@ -73,8 +73,8 @@
     {
       "name": "multi-agent-review",
       "source": "./multi-agent-review",
-      "description": "Parallel multi-agent review with synthesizer dedup + cross-axis severity budget. Targets PR/dir/file/spec/diff/slices. Ships a review→fix→re-review loop wrapper too.",
-      "version": "1.1.0",
+      "description": "Parallel multi-agent review with synthesizer dedup + cross-axis severity budget. A PR target loops review→fix→re-review by default (--no-loop for one-shot read-only). Targets PR/dir/file/spec/diff/slices.",
+      "version": "2.0.0",
       "author": {
         "name": "z0rd0n88"
       },
@@ -114,7 +114,7 @@
       "name": "multi-agent-developer",
       "source": "./multi-agent-developer",
       "description": "Manager-led TDD dev team (≤4 Opus agents) that debates a spec across RED→GREEN→REFACTOR rounds, synthesizes via an architect, materializes a worktree, runs tests. Plus a one-time setup skill.",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "author": {
         "name": "z0rd0n88"
       },
@@ -134,7 +134,7 @@
       "name": "code-rinse-repeat",
       "source": "./code-rinse-repeat",
       "description": "End-to-end spec→APPROVE orchestrator. Composes multi-agent-developer (build) with multi-agent-review (review-fix loop). Lather, rinse, repeat — for code.",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "author": {
         "name": "z0rd0n88"
       },
@@ -227,7 +227,7 @@
       "name": "daily-loop",
       "source": "./daily-loop",
       "description": "Auto-triggered workflow routing table — session-type → skill-chain, plus brainstorm routing. Not user-invocable.",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "author": {
         "name": "z0rd0n88"
       },

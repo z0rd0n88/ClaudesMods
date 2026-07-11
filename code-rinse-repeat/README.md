@@ -14,7 +14,7 @@ You hand it a spec, PRD, or issue. You get back a verified, reviewed worktree wi
 
 ## Why it exists
 
-`multi-agent-developer` produces a verified-tests-pass worktree from a spec — but tests-pass ≠ ship-ready. There are still architecture issues, silent-failure landmines, security smells, and idiom-rot to catch. `multi-agent-review-loop` (inside the `multi-agent-review` plugin) is the existing loop primitive — but it operates on an **existing pushed PR**.
+`multi-agent-developer` produces a verified-tests-pass worktree from a spec — but tests-pass ≠ ship-ready. There are still architecture issues, silent-failure landmines, security smells, and idiom-rot to catch. `multi-agent-review pr <ref> --yes` (the `multi-agent-review` plugin's loop-by-default PR mode) is the existing loop primitive — but it operates on an **existing pushed PR**.
 
 This skill fills the gap: **"I have a spec, I want clean code on a branch, no manual handoff between build and review."**
 
@@ -26,7 +26,7 @@ The skill body uses short identifiers for the composed skills — defined once a
 |---|---|---|
 | **XMAD** | `multi-agent-developer` | TDD-disciplined ≤4-Opus dev team across RED → GREEN → REFACTOR rounds |
 | **XMAR** | `multi-agent-review` | Parallel multi-perspective review with synthesizer dedup |
-| **XMAR-Loop** | `multi-agent-review-loop` | Iterative review → fix → re-review wrapper on an existing PR |
+| **XMAR-Loop** | `multi-agent-review pr <ref> --yes` | Iterative review → fix → re-review loop mode on an existing PR |
 
 (`XMAD` / `XMAR` are the original brand identifiers from before the public-rename — kept because "MAD" / "MAR" would read oddly and the glossary makes the mapping explicit.)
 
@@ -81,7 +81,7 @@ Five load-bearing properties:
 |---|---|---|
 | Spec → code | `multi-agent-developer` | [`multi-agent-developer`](https://github.com/z0rd0n88/ClaudesMods/tree/main/multi-agent-developer) |
 | Code → findings | `multi-agent-review` | [`multi-agent-review`](https://github.com/z0rd0n88/ClaudesMods/tree/main/multi-agent-review) |
-| Findings → APPROVE on existing PR | `multi-agent-review-loop` | [`multi-agent-review`](https://github.com/z0rd0n88/ClaudesMods/tree/main/multi-agent-review) |
+| Findings → APPROVE on existing PR | `multi-agent-review pr <ref> --yes` | [`multi-agent-review`](https://github.com/z0rd0n88/ClaudesMods/tree/main/multi-agent-review) |
 | **Spec → APPROVE end-to-end** | **`code-rinse-repeat`** | **this plugin** |
 | Multi-phase build queues | `baton-runner-multi-agent` | [`baton`](https://github.com/z0rd0n88/ClaudesMods/tree/main/baton) (drives `code-rinse-repeat` per unit) |
 

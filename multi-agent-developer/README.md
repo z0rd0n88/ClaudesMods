@@ -68,7 +68,7 @@ Each invocation lands the same artifact: a feature worktree at `.worktrees/feat/
 |---|---|---|
 | **Spec → code** | **`multi-agent-developer`** | this plugin |
 | Code → findings | [`multi-agent-review`](https://github.com/z0rd0n88/ClaudesMods/tree/main/multi-agent-review) | sibling plugin |
-| Findings → APPROVE on existing PR | `multi-agent-review-loop` | inside `multi-agent-review` |
+| Findings → APPROVE on existing PR | `multi-agent-review pr <ref> --yes` | inside `multi-agent-review` |
 | Spec → APPROVE end-to-end | [`code-rinse-repeat`](https://github.com/z0rd0n88/ClaudesMods/tree/main/code-rinse-repeat) | composes this plugin + multi-agent-review |
 | Multi-phase queues | [`baton`](https://github.com/z0rd0n88/ClaudesMods/tree/main/baton) | drives multiple specs via this plugin |
 
