@@ -14,6 +14,10 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export LLM_FIT_CHECK_STATE_DIR="$(mktemp -d)"
 STATE="$LLM_FIT_CHECK_STATE_DIR"
 pass=0; fail=0
+# Hermetic: the runner's shell may export CLAUDE_EFFORT (the /effort setting),
+# which would mask the payload/sidecar effort paths under test. Clear it so
+# effort resolution is driven only by the fixtures below.
+unset CLAUDE_EFFORT
 
 hr(){ printf '%s\n' "----------------------------------------------------------------------"; }
 ok(){ pass=$((pass+1)); printf '  [PASS] %s\n' "$1"; }
@@ -187,6 +191,25 @@ printf '%s' "$WHY" | grep -q 'sid=why1' && ok "--why finds session classify line
   || no "--why missing classify line for sid=why1"
 printf '%s' "$WHY" | grep -q 'DECISION=block' && ok "--why finds the block decision" \
   || no "--why missing DECISION=block"
+
+hr; echo "== N. effort resolution: payload -> \$CLAUDE_EFFORT -> sidecar =="
+# effort_of: the resolved effort classify.sh logged for a sid
+effort_of(){ grep "classify sid=$1 " "$STATE/debug.log" 2>/dev/null | tail -1 | sed -E "s/.*effort='([^']*)'.*/\1/"; }
+# unit: the new read helper round-trips the sidecar effort
+ueff="$( . "$HERE/lib.sh"; lfc_sidecar_update ureff claude-opus-4-8 xhigh; lfc_sidecar_read_effort ureff )"
+eq "$ueff" "xhigh" "lfc_sidecar_read_effort"
+# N1: payload carries no effort -> falls back to the seeded sidecar effort
+seed effA claude-opus-4-8 high
+run_classify effA 'add a small feature to the parser' '' '' >/dev/null
+eq "$(effort_of effA)" "high" "empty payload falls back to sidecar effort"
+# N2: payload effort takes precedence over the sidecar
+seed effB claude-opus-4-8 low
+run_classify effB 'add a small feature to the parser' high '' >/dev/null
+eq "$(effort_of effB)" "high" "payload effort overrides sidecar"
+# N3: no payload effort and no sidecar effort -> stays empty (unknown), fail-open
+seed effC claude-opus-4-8 ""
+run_classify effC 'add a small feature to the parser' '' '' >/dev/null
+eq "$(effort_of effC)" "" "no payload+no sidecar effort stays unknown"
 
 hr; echo "== K. lfc_log rotation at threshold =="
 if (
