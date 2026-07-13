@@ -95,7 +95,13 @@ if [ "$under_model" = 0 ] && [ "$under_eff" = 0 ] && { [ "$over_model" = 1 ] || 
     sugg="${sugg}/effort $(lfc_effort_name "$d_eff")"
   fi
   msg="llm-fit-check: ${band} task on a heavier setup — ${sugg} would save cost/latency."
-  jq -n --arg m "$msg" '{systemMessage:$m}'
+  # Emit both systemMessage (rendered directly when the client supports it) and
+  # additionalContext (read by Claude regardless of client) — some clients (e.g.
+  # the VS Code extension) do not visibly render a non-blocking systemMessage,
+  # so additionalContext is the only reliable path to surface the warning there.
+  jq -n --arg m "$msg" \
+    '{systemMessage:$m,
+      hookSpecificOutput:{hookEventName:"UserPromptSubmit", additionalContext:$m}}'
   lfc_log "DECISION=warn $msg"
   exit 0
 fi
