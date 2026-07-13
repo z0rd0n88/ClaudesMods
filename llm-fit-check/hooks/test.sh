@@ -83,6 +83,32 @@ seed w2 claude-opus-4-8 high
 assert_case "moderate opus/high -> warn" warn "/model sonnet && /effort medium" \
   "$(run_classify w2 'add a new endpoint that returns the user list from the service' high '')"
 
+hr; echo "== C2. WARN additionalContext gate (CLAUDE_CODE_ENTRYPOINT) =="
+seed w3 claude-opus-4-8 high
+w3_out="$(printf '%s' "$(jq -n --arg s w3 --arg p 'fix a typo in the readme' --arg e high \
+  '{session_id:$s, prompt:$p, effort:{level:$e}, transcript_path:""}')" \
+  | env -u CLAUDE_CODE_ENTRYPOINT bash "$HERE/classify.sh" 2>/dev/null)"
+if printf '%s' "$w3_out" | grep -q '"systemMessage"' \
+  && ! printf '%s' "$w3_out" | grep -q '"hookSpecificOutput"'; then
+  ok "non-vscode entrypoint -> warn without additionalContext"
+else
+  no "non-vscode entrypoint -> warn without additionalContext"
+  printf '         output: %s\n' "${w3_out:-<empty>}"
+fi
+
+seed w4 claude-opus-4-8 high
+w4_out="$(printf '%s' "$(jq -n --arg s w4 --arg p 'fix a typo in the readme' --arg e high \
+  '{session_id:$s, prompt:$p, effort:{level:$e}, transcript_path:""}')" \
+  | CLAUDE_CODE_ENTRYPOINT=claude-vscode bash "$HERE/classify.sh" 2>/dev/null)"
+sm="$(printf '%s' "$w4_out" | jq -r '.systemMessage // ""' 2>/dev/null)"
+ac="$(printf '%s' "$w4_out" | jq -r '.hookSpecificOutput.additionalContext // ""' 2>/dev/null)"
+if [ -n "$sm" ] && [ "$sm" = "$ac" ]; then
+  ok "vscode entrypoint -> warn with matching additionalContext"
+else
+  no "vscode entrypoint -> warn with matching additionalContext"
+  printf '         output: %s\n' "${w4_out:-<empty>}"
+fi
+
 hr; echo "== D. SILENT / match paths =="
 seed s1 claude-opus-4-8 high
 assert_case "heavy opus/high -> silent" silent "" \
