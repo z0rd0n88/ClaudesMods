@@ -95,13 +95,18 @@ if [ "$under_model" = 0 ] && [ "$under_eff" = 0 ] && { [ "$over_model" = 1 ] || 
     sugg="${sugg}/effort $(lfc_effort_name "$d_eff")"
   fi
   msg="llm-fit-check: ${band} task on a heavier setup — ${sugg} would save cost/latency."
-  # Emit both systemMessage (rendered directly when the client supports it) and
-  # additionalContext (read by Claude regardless of client) — some clients (e.g.
-  # the VS Code extension) do not visibly render a non-blocking systemMessage,
-  # so additionalContext is the only reliable path to surface the warning there.
-  jq -n --arg m "$msg" \
-    '{systemMessage:$m,
-      hookSpecificOutput:{hookEventName:"UserPromptSubmit", additionalContext:$m}}'
+  # The VS Code extension does not visibly render a non-blocking systemMessage
+  # (confirmed by live repro: hook fired, logged DECISION=warn, nothing shown).
+  # CLAUDE_CODE_ENTRYPOINT=claude-vscode is set by Claude Code itself to
+  # identify that client, so add additionalContext only there — Claude then
+  # relays the warning in its reply. Other clients keep the plain systemMessage.
+  if [ "${CLAUDE_CODE_ENTRYPOINT:-}" = "claude-vscode" ]; then
+    jq -n --arg m "$msg" \
+      '{systemMessage:$m,
+        hookSpecificOutput:{hookEventName:"UserPromptSubmit", additionalContext:$m}}'
+  else
+    jq -n --arg m "$msg" '{systemMessage:$m}'
+  fi
   lfc_log "DECISION=warn $msg"
   exit 0
 fi
