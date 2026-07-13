@@ -17,7 +17,7 @@ The orchestrator stays **out of per-unit context** — each implement / review /
 |---|---|---|
 | [`baton-runner`](./skills/baton-runner/SKILL.md) | Drives an ordered queue of specs as sequential implement→review→fix work units in a single worktree. Each unit is a clean subagent dispatch. Per-unit gates (compile + test + lint) before advancing. | `/baton-runner` |
 | [`baton-runner-multi-agent`](./skills/baton-runner-multi-agent/SKILL.md) | Fork where the **implement step** delegates to `multi-agent-developer` (≤4 Opus specialists, RED → GREEN → REFACTOR) and the **review step** delegates to `multi-agent-review` with a user-approved per-phase roster. | `/baton-runner-multi-agent` |
-| [`baton-pass`](./skills/baton-pass/SKILL.md) | Standalone session handoff notes to `baton-pass/<feature>/NNN-…md`. Append-only, numbered, feature-scoped. Used internally by the runners; also user-invokable. | `/baton-pass` |
+| [`baton-pass`](./skills/baton-pass/SKILL.md) | Standalone session baton-pass notes to `baton-pass/<feature>/NNN-…md`. Append-only, numbered, feature-scoped. Used internally by the runners; also user-invokable. | `/baton-pass` |
 
 ## What makes baton-runner-multi-agent different
 
@@ -45,9 +45,9 @@ The note body captures: what was decided this session, what's still open, where 
 | Single spec → APPROVE | `code-rinse-repeat` | [`code-rinse-repeat`](https://github.com/z0rd0n88/ClaudesMods/tree/main/code-rinse-repeat) |
 | Queue of specs, single-agent units | `baton-runner` | this plugin |
 | Queue of specs, multi-agent units | `baton-runner-multi-agent` | this plugin |
-| Session handoff notes (standalone) | `baton-pass` | this plugin |
+| Session baton-pass notes (standalone) | `baton-pass` | this plugin |
 
-`baton-runner-multi-agent` is the most powerful: it composes `multi-agent-developer` (build) + `multi-agent-review` (review) + `baton-pass` (handoffs) on a queue. If `code-rinse-repeat` is "build one spec to APPROVE end-to-end", `baton-runner-multi-agent` is "build a queue of N specs to APPROVE end-to-end."
+`baton-runner-multi-agent` is the most powerful: it composes `multi-agent-developer` (build) + `multi-agent-review` (review) + `baton-pass` (session notes) on a queue. If `code-rinse-repeat` is "build one spec to APPROVE end-to-end", `baton-runner-multi-agent` is "build a queue of N specs to APPROVE end-to-end."
 
 ## Install
 
@@ -74,7 +74,7 @@ claude plugin install multi-agent-review
 # Multi-agent runner with user-approved per-phase rosters:
 /baton-runner-multi-agent queue.md
 
-# Write a standalone handoff note:
+# Write a standalone baton-pass note:
 /baton-pass payment-replay
 ```
 

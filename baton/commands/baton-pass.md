@@ -1,5 +1,5 @@
 ---
-description: "Write a session handoff note to baton-pass/ (append-only, numbered, feature-scoped)"
+description: "Write a session baton-pass note to baton-pass/ (append-only, numbered, feature-scoped)"
 argument-hint: "[feature-slug]"
 ---
 
@@ -7,7 +7,7 @@ Invoke the `baton-pass` skill and follow it exactly.
 
 Arguments forwarded: `$ARGUMENTS`
 
-Writes a session handoff note to `baton-pass/<feature-or-epic>/NNN-<slug>.md` in the project root. Append-only, three-digit sequential numbering, feature/epic subdirectories.
+Writes a session baton-pass note to `baton-pass/<feature-or-epic>/NNN-<slug>.md` in the project root. Append-only, three-digit sequential numbering, feature/epic subdirectories.
 
 Use when:
 - Ending a working block whose context the next session needs to inherit
