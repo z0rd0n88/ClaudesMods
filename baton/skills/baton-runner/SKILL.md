@@ -1,6 +1,6 @@
 ---
 name: baton-runner
-description: Sequentially build an ordered list of specs/PRDs/issues as implement→review→fix subagent units with baton-pass handoffs in a fresh worktree. User-invoked; use to drive multi-phase builds.
+description: Sequentially build an ordered list of specs/PRDs/issues as implement→review→fix subagent units with baton-pass notes in a fresh worktree. User-invoked; use to drive multi-phase builds.
 ---
 
 # baton-runner

@@ -152,8 +152,8 @@
     {
       "name": "baton",
       "source": "./baton",
-      "description": "Long-running multi-phase build orchestrator: baton-runner queues specs as implement→review→fix units, baton-runner-multi-agent uses multi-agent dev teams per phase, baton-pass writes session handoff notes.",
-      "version": "1.0.0",
+      "description": "Long-running multi-phase build orchestrator: baton-runner queues specs as implement→review→fix units, baton-runner-multi-agent uses multi-agent dev teams per phase, baton-pass writes session notes.",
+      "version": "1.1.0",
       "author": {
         "name": "z0rd0n88"
       },
@@ -162,7 +162,7 @@
         "orchestrator",
         "multi-phase",
         "queue",
-        "session-handoff",
+        "session-notes",
         "baton-pass",
         "resumability",
         "long-running",

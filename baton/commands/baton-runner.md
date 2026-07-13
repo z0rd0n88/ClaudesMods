@@ -1,5 +1,5 @@
 ---
-description: "Run a queue of specs as implement→review→fix work units with baton-pass handoffs"
+description: "Run a queue of specs as implement→review→fix work units with baton-pass notes"
 argument-hint: "<queue-path-or-ref> [flags]"
 ---
 
@@ -18,4 +18,4 @@ Use when:
 
 Companion skills in this plugin:
 - `/baton-runner-multi-agent` — same loop, but each implement step delegates to `multi-agent-developer` (≤4 Opus specialists debating per phase) instead of a single subagent.
-- `/baton-pass` — write standalone session handoff notes (used internally by both runners, also user-invokable).
+- `/baton-pass` — write standalone session baton-pass notes (used internally by both runners, also user-invokable).
