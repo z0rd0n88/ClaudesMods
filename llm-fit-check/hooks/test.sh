@@ -113,6 +113,31 @@ else
   printf '         output: %s\n' "${w4_out:-<empty>}"
 fi
 
+seed w5 claude-opus-4-8 high
+w5_out="$(printf '%s' "$(jq -n --arg s w5 --arg p 'fix a typo in the readme' --arg e high \
+  '{session_id:$s, prompt:$p, effort:{level:$e}, transcript_path:""}')" \
+  | CLAUDE_CODE_ENTRYPOINT=claude-desktop bash "$HERE/classify.sh" 2>/dev/null)"
+sm="$(printf '%s' "$w5_out" | jq -r '.systemMessage // ""' 2>/dev/null)"
+ac="$(printf '%s' "$w5_out" | jq -r '.hookSpecificOutput.additionalContext // ""' 2>/dev/null)"
+if [ -n "$sm" ] && [ "$sm" = "$ac" ]; then
+  ok "desktop entrypoint -> warn with matching additionalContext"
+else
+  no "desktop entrypoint -> warn with matching additionalContext"
+  printf '         output: %s\n' "${w5_out:-<empty>}"
+fi
+
+seed w6 claude-opus-4-8 high
+w6_out="$(printf '%s' "$(jq -n --arg s w6 --arg p 'fix a typo in the readme' --arg e high \
+  '{session_id:$s, prompt:$p, effort:{level:$e}, transcript_path:""}')" \
+  | CLAUDE_CODE_ENTRYPOINT=claude-cli bash "$HERE/classify.sh" 2>/dev/null)"
+if printf '%s' "$w6_out" | grep -q '"systemMessage"' \
+  && ! printf '%s' "$w6_out" | grep -q '"hookSpecificOutput"'; then
+  ok "explicit claude-cli entrypoint -> warn without additionalContext"
+else
+  no "explicit claude-cli entrypoint -> warn without additionalContext"
+  printf '         output: %s\n' "${w6_out:-<empty>}"
+fi
+
 hr; echo "== D. SILENT / match paths =="
 seed s1 claude-opus-4-8 high
 assert_case "heavy opus/high -> silent" silent "" \
