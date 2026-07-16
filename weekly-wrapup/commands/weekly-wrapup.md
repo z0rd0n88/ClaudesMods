@@ -1,10 +1,11 @@
 ---
-description: "Generate the weekly wrapup report from /insights + /standup, compared against last week"
+description: "Generate the weekly wrapup from the persisted /insights report + cross-project /standup, compared against last week"
 argument-hint: ""
 ---
 
 Invoke the `weekly-wrapup` skill from this plugin.
 
-Reminder: `/insights` must have already run earlier in this same prompt/conversation
-(it's a native CLI command, not something this command can call) — the skill checks for
-its output in context and stops with instructions if it's missing.
+The skill reads the latest insights report from `~/.claude/usage-data/report.html` (it does
+not call `/insights` itself — that's a native CLI command). For the freshest data, run
+`/insights` before this. The skill runs fine on a stale or missing report; it just notes the
+age and proceeds.
