@@ -189,6 +189,24 @@
       ]
     },
     {
+      "name": "weekly-wrapup",
+      "source": "./weekly-wrapup",
+      "description": "User-invoked /weekly-wrapup: combines /insights and /standup into a weekly report, compares it against last week, and appends a critical GitHub-issues table and next-steps section.",
+      "version": "1.0.0",
+      "author": {
+        "name": "z0rd0n88"
+      },
+      "category": "productivity",
+      "keywords": [
+        "weekly-wrapup",
+        "retro",
+        "insights",
+        "standup",
+        "review",
+        "github-issues"
+      ]
+    },
+    {
       "name": "idea-panel",
       "source": "./idea-panel",
       "description": "Parallel panel of thinking-skills mental-model lenses generates candidate ideas for a topic, then a synthesizer ranks and dedupes them into one shortlist. Generative sibling of multi-agent-review.",
