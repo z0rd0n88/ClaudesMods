@@ -25,6 +25,15 @@ tpath="$(printf '%s' "$payload" | jq -r '.transcript_path // ""' 2>/dev/null)"
 # Empty prompt (e.g. a slash-command pass-through) -> nothing to classify.
 [ -z "${prompt// /}" ] && exit 0
 
+# Skip marker: `raw:` prefix, case-insensitive => silent allow, no classification.
+# Same opt-out convention as hooks/prompt-improver. Unlike prompt-improver, this
+# hook never rewrites the prompt, so a plain skip needs no opt-out note.
+lc_head="$(printf '%s' "$prompt" | head -c 4 | tr '[:upper:]' '[:lower:]')"
+if [ "$lc_head" = "raw:" ]; then
+  lfc_log "gate=skip-marker sid=$sid"
+  exit 0
+fi
+
 # --- current effort: payload -> $CLAUDE_EFFORT -> sidecar --------------------
 # The harness does not always deliver effort to the hook (payload .effort.level
 # and $CLAUDE_EFFORT can both be empty at hook time). session-init.sh seeds the

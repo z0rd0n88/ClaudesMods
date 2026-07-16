@@ -35,6 +35,18 @@ with `borderline` resolved), and the band maps to a desired model tier + effort.
 hook compares that against the current model (a per-session sidecar) and effort, and
 only **heavy/risky** tasks are eligible to block.
 
+## Skip / bypass
+
+**Per-prompt:** prefix with **`raw:`** (case-insensitive) — the hook exits silently
+before classification runs, so nothing blocks or warns for that one prompt. Same
+opt-out convention as `hooks/prompt-improver`. Unlike that hook, `llm-fit-check`
+never rewrites the prompt, so there's no marker text to explain away — the prefix
+just stays in what you sent.
+
+```
+raw: refactor and re-architect the auth module for a race condition
+```
+
 ## Components
 
 | Path | Role |
@@ -46,7 +58,7 @@ only **heavy/risky** tasks are eligible to block.
 | `hooks/session-init.sh` | `SessionStart` — seed the model/effort sidecar |
 | `hooks/cleanup.sh` | `SessionEnd` — remove the sidecar |
 | `hooks/track-model.sh` | Shipped but **unwired** (undocumented `ConfigChange` event) |
-| `hooks/test.sh` | 43-assertion path-coverage suite |
+| `hooks/test.sh` | 52-assertion path-coverage suite |
 | `commands/model-route.md` | `/model-route` recommendation + `--why` |
 
 ## Configuration (environment variables)
@@ -61,7 +73,7 @@ only **heavy/risky** tasks are eligible to block.
 ## Testing
 
 ```
-bash hooks/test.sh    # → SUMMARY: PASS=43 FAIL=0, exit 0
+bash hooks/test.sh    # → SUMMARY: PASS=52 FAIL=0, exit 0
 ```
 
 ## Notes

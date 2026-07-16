@@ -60,6 +60,10 @@ seed grd claude-haiku-4-5 low
 assert_case "recursion guard -> silent" silent "" \
   "$(run_classify grd 'refactor the distributed lock race condition' low '' guard)"
 assert_case "empty prompt -> silent" silent "" "$(run_classify grd '   ' low '')"
+assert_case "raw: marker on heavy task -> silent (skips classification)" silent "" \
+  "$(run_classify grd 'raw: refactor and re-architect the auth module for a race condition' low '')"
+assert_case "RAW: marker case-insensitive -> silent" silent "" \
+  "$(run_classify grd 'RAW: refactor and re-architect the auth module for a race condition' low '')"
 
 hr; echo "== B. BLOCK paths (heavy task, under-powered) =="
 seed b1 claude-haiku-4-5 low
