@@ -693,7 +693,47 @@ Iterations cap: <max>
 Additionally:
 
 1. **Post a single PR comment** summarizing the loop's actions: total rounds, fixes applied with commit refs, items deferred with reasoning, and any items left unresolved. Use `gh pr comment <ref> --body ...`.
-2. **File a follow-up issue** for every deferred MEDIUM that survives the loop (LOW items get inlined into the PR comment instead — don't pollute the issue tracker with style nits).
+2. **Post detailed per-round findings** (§10.7a) — one PR comment per completed round, each with collapsible sections for each reviewer's full findings by severity. This ensures traceability and preserves the evolution of findings across rounds.
+3. **File a follow-up issue** for every deferred MEDIUM that survives the loop (LOW items get inlined into the PR comment instead — don't pollute the issue tracker with style nits).
+
+### 10.7a Detailed per-round findings (PR comments)
+
+For each completed round (1..N), post a separate PR comment with this structure:
+
+```markdown
+### Round <N> — <VERDICT>
+
+Reviewers: <names in roster order>
+
+<for each reviewer in the round>
+<details>
+<summary><strong><reviewer-name></strong> — <VERDICT></summary>
+
+#### CRITICAL
+- none / <each finding with file:line, description, suggested fix>
+
+#### HIGH
+- none / <each finding with file:line, description, suggested fix>
+
+#### MEDIUM
+- none / <each finding with file:line, description, suggested fix>
+
+#### LOW
+- none / <each finding with file:line, description, suggested fix>
+
+#### Notes
+- <confidence / disagreements / tool issues>
+
+</details>
+<end for each reviewer>
+```
+
+**Purpose:** Each round's full findings are persisted on the PR for future reference, context, and audit trail. Readers can see exactly what each reviewer assessed in each round and when the verdict changed.
+
+**Notes:**
+- Use `<details>` tags to keep the PR thread readable (reviewers' findings are collapsible by default).
+- Post these comments **after** the main loop-summary comment (§10.7 step 1) so the summary appears first, then the details follow.
+- Include even APPROVE verdicts so there is a complete record.
 
 ## 11. Error handling
 
