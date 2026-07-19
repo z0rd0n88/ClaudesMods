@@ -1,13 +1,13 @@
 ---
 name: claude-md-trim
-description: Use when a repository's always-loaded agent context files (CLAUDE.md, AGENTS.md, GEMINI.md) have grown long, noisy, stale, or bloated and need trimming for signal-to-noise — symptoms include incident narratives, setup procedures, env-var essays, status/"next steps" sections, or drifted facts living in a file that loads into every session's prompt budget. Also use to mine session transcripts and git history for recurring failures that CLAUDE.md should cover but doesn't. Supports a single repo or multiple repos in one run.
+description: Use when always-loaded agent context files (CLAUDE.md/AGENTS.md/GEMINI.md) are long, noisy, or stale and need trimming to invariants + pointers, or when session/git logs should be mined for missing guidance; one repo or many.
 ---
 
 # CLAUDE.md Trim — Signal-to-Noise for Always-Loaded Context
 
 ## Overview
 
-Context files (CLAUDE.md / AGENTS.md) load into every session's prompt budget. Target state: **invariants + pointers only** — rules every code change needs, cross-module contracts, short gotchas, and links. Everything else moves to linked docs. The operation is **relocation + compression, never deletion**, and never changes an invariant's meaning.
+Context files (CLAUDE.md / AGENTS.md / GEMINI.md) load into every session's prompt budget. Target state: **invariants + pointers only** — rules every code change needs, cross-module contracts, short gotchas, and links. Everything else moves to linked docs. The operation is **relocation + compression, never deletion**, and never changes an invariant's meaning.
 
 **The litmus test for every line:** *does every code change in this repo need this loaded?* If not, it moves behind a link.
 
@@ -22,7 +22,7 @@ Context files (CLAUDE.md / AGENTS.md) load into every session's prompt budget. T
 | Parameter | Default |
 |---|---|
 | PROJECTS | current repo. Multiple: user lists repo paths — process each **sequentially and completely** (own worktree, own trim, own PR) before starting the next. Never share a branch or PR across repos. |
-| CONTEXT_FILES | `git ls-files '*CLAUDE.md' '*AGENTS.md'` per repo |
+| CONTEXT_FILES | `git ls-files '*CLAUDE.md' '*AGENTS.md' '*GEMINI.md'` per repo |
 | DETAIL_HOMES | the repo's own convention if declared (read the root context file's doc-hygiene rule — it overrides these defaults); else `docs/guide/<topic>.md` (how-to/reference) and `docs/progress/<module>-status.md` (status that drifts), created as needed |
 | EXCLUSIONS | deprecated/slated-for-deletion modules, third-party-owned files — list them in the summary with the reason; do not edit |
 
@@ -39,12 +39,12 @@ Context files (CLAUDE.md / AGENTS.md) load into every session's prompt budget. T
 - **Session logs / transcripts** (e.g. `~/.claude/projects/<project>/*.jsonl`): aggregate tool errors (`is_error` results), user rejections, and correction-shaped user messages; also read any distilled auto-memory index. Aggregate with a script — never page raw transcripts into context.
 - **Landing filter — a mined candidate is added only if it passes all three:** (a) verified against ground truth (read the actual fix commits / code before writing the gotcha); (b) not already documented at its point of use (a trap covered in the relevant skill/guide/tracked issue does not get re-added); (c) placed per the hygiene rule — gotcha/guide docs by default, the context file itself only if every code change needs it loaded.
 
-**5. Classify each section:**
+**5. Classify each section (KEEP or MOVE), verifying everything carried forward:**
 - **KEEP** (possibly compressed): invariants, safety rules, cross-module contracts, short gotchas, links. Compression must not change meaning.
 - **MOVE** to DETAIL_HOMES: procedures, setup, config detail, code examples, incident narratives, status sections. Create the target doc if missing; leave a one-line pointer + link.
 - **VERIFY** everything before carrying it forward — check claims against ground truth (code, status docs, referenced files). Stale facts get corrected or dropped **with an explicit note in the PR**, never silently relocated or silently deleted. Dead links are never carried into new docs.
 
-**6. Relocate, never delete.** Before marking a section CUT because "it's duplicated elsewhere," open the alleged duplicate and confirm it contains *every* fact — a file table's one-line purposes are not in an auto-generated tree; a summary is not the incident narrative. Anything the duplicate lacks moves there first. Preserve incident narratives and security-adjacent reasoning verbatim in their new home.
+**6. Relocate, never delete.** Before dropping a section as "duplicated elsewhere," open the alleged duplicate and confirm it contains *every* fact — a file table's one-line purposes are not in an auto-generated tree; a summary is not the incident narrative. Anything the duplicate lacks moves there first. Preserve incident narratives and security-adjacent reasoning verbatim in their new home.
 
 **7. Verify links.** Script a resolver over every touched file's relative links; it must print positive OK/MISS per link — an empty grep is not proof.
 
@@ -56,7 +56,7 @@ Context files (CLAUDE.md / AGENTS.md) load into every session's prompt budget. T
 
 | Mistake | Fix |
 |---|---|
-| CUT because "ARCH.md/openapi has this" without opening it | Verify the duplicate holds every fact; move the delta first |
+| Dropping a section because "ARCH.md/openapi has this" without opening it | Verify the duplicate holds every fact; move the delta first |
 | Trimming on a stale local base | Step 1 is mandatory, first, every repo |
 | Fixing drift silently | Every correction is itemized in the PR with evidence |
 | Moving a section, forgetting the pointer | Add pointer + link before touching the next section |
