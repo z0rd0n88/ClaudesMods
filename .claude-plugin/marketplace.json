@@ -25,6 +25,25 @@
         "orchestrator", "spec", "brainstorming", "ideation", "productivity",
         "model-routing", "inventory", "session-notes"
       ]
+    },
+    {
+      "name": "chiquito",
+      "source": "./chiquito",
+      "description": "Makes a doc, spec, plan, or response chiquito — cuts fluff and structural padding while preserving every fact and decision.",
+      "version": "1.0.0",
+      "author": {
+        "name": "z0rd0n88"
+      },
+      "category": "productivity",
+      "keywords": [
+        "chiquito",
+        "trim",
+        "concise",
+        "editing",
+        "conciseness",
+        "writing",
+        "documentation"
+      ]
     }
   ]
 }
