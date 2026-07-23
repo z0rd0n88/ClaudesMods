@@ -3,7 +3,7 @@ description: "Cut fluff and structural padding from a doc, spec, plan, or respon
 argument-hint: "[file path, or paste text inline]"
 ---
 
-Invoke the `chiquito` skill and follow it exactly.
+Invoke the `chiquita` skill and follow it exactly.
 
 Arguments forwarded: `$ARGUMENTS`
 

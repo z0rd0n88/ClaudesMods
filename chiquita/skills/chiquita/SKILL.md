@@ -1,11 +1,11 @@
 ---
-name: chiquito
-description: Makes a doc, spec, plan, or response chiquito — cuts fluff and structural padding while preserving every fact and decision — for prose, not code (simplify) or an ongoing terse mode (caveman)
+name: chiquita
+description: Makes a doc, spec, plan, or response chiquita — cuts fluff and structural padding while preserving every fact and decision — for prose, not code (simplify) or an ongoing terse mode (caveman)
 ---
 
-# Chiquito
+# Chiquita
 
-Chiquito means small — cut fat, not muscle: strip filler and padding, keep
+Chiquita means small — cut fat, not muscle: strip filler and padding, keep
 every fact, decision, number, and caveat. Applies to any prose target — a
 file, a spec, a plan, a response draft, a pasted string.
 
@@ -27,7 +27,7 @@ file, a spec, a plan, a response draft, a pasted string.
    every remaining paragraph states operative content, not commentary about the
    content.
 
-4. **Verify nothing substantive was lost.** Reread the chiquito version against
+4. **Verify nothing substantive was lost.** Reread the chiquita version against
    the original. Completion criterion: a side-by-side check finds every fact,
    number, decision, constraint, and caveat surviving somewhere in the result —
    zero drops. If a cut created ambiguity, that's a loss; restore or clarify it.

@@ -1,6 +1,6 @@
-# Chiquito
+# Chiquita
 
-A Claude Code plugin that makes a piece of writing **chiquito** — small — by
+A Claude Code plugin that makes a piece of writing **chiquita** — small — by
 cutting fluff and structural padding while preserving every fact and decision.
 Works on a file, a spec, a plan, a response draft, or a pasted string.
 
@@ -22,13 +22,13 @@ than a maximally compressed draft would be.
 
 ```bash
 claude marketplace add github:z0rd0n88/ClaudesMods
-claude plugin install chiquito
+claude plugin install chiquita
 ```
 
 ## Use
 
 ```bash
-/chiquito path/to/doc.md
+/chiquita path/to/doc.md
 ```
 
 Or paste text inline, or just ask Claude to make something more concise — the
@@ -37,20 +37,20 @@ skill triggers on that phrasing too.
 ## Relation to other skills
 
 - **`simplify`** — code changes only (reuse, simplification, efficiency). Use
-  that for a diff; use `chiquito` for prose.
-- **`caveman`** — an ongoing terse *conversation mode*. `chiquito` is a one-shot
+  that for a diff; use `chiquita` for prose.
+- **`caveman`** — an ongoing terse *conversation mode*. `chiquita` is a one-shot
   edit applied to an existing piece of writing, not a standing mode.
 
 ## Layout
 
 ```
-chiquito/
+chiquita/
 ├── .claude-plugin/plugin.json
 ├── README.md                     # this file
 ├── commands/
-│   └── chiquito.md               # /chiquito entry point
+│   └── chiquita.md               # /chiquita entry point
 └── skills/
-    └── chiquito/SKILL.md         # the editing logic
+    └── chiquita/SKILL.md         # the editing logic
 ```
 
 ## License
