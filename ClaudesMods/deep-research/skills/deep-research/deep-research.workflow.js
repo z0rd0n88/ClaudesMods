@@ -15,7 +15,8 @@ export const meta = {
 
 // ─── args: accept a bare question string OR an options object ───
 const A = (args && typeof args === "object") ? args : {}
-const QUESTION = ((typeof args === "string" ? args : A.question) || "").trim()
+const rawQuestion = typeof args === "string" ? args : A.question
+const QUESTION = String(rawQuestion ?? "").trim()
 
 // ─── G3: depth presets (default "standard"; was fetch=15/claims=25/votes=3 with no floor) ───
 const DEPTH = A.depth || "standard"
@@ -24,7 +25,7 @@ const PRESETS = {
   standard: { fetch: 8,  claims: 12, votes: 3 },
   deep:     { fetch: 15, claims: 25, votes: 3 },
 }
-const P = PRESETS[DEPTH] || PRESETS.standard
+const P = Object.hasOwn(PRESETS, DEPTH) ? PRESETS[DEPTH] : PRESETS.standard
 
 // ─── G1: model pins — the single biggest cost lever ───
 // Search/Fetch/Verify are mechanical, schema-constrained, and run in bulk (dozens of calls):
@@ -40,7 +41,7 @@ const MODELS = Object.assign({
 // ─── resolve caps (args override preset) ───
 let MAX_FETCH         = A.maxFetch  ?? P.fetch
 let MAX_VERIFY_CLAIMS = A.maxClaims ?? P.claims
-let VOTES_PER_CLAIM   = A.votes     ?? P.votes
+let VOTES_PER_CLAIM   = Math.max(1, A.votes ?? P.votes)
 const REFUTATIONS_REQUIRED = 2  // ≥2 refuting votes kill a claim (also the min valid votes to adjudicate "survives")
 
 // ─── G2: token-budget ceiling — trim caps up front if the turn's budget is tight ───
@@ -52,10 +53,12 @@ function budgetTrim() {
   // Worst-case cost of the plan we're about to run, in estimated output tokens.
   const plannedAgents = 1 + 6 /*scope+search angles*/ + MAX_FETCH + MAX_VERIFY_CLAIMS * VOTES_PER_CLAIM + 1
   if (rem >= plannedAgents * TOKENS_PER_AGENT) return
-  // Not enough headroom — scale the plan down to fit, keeping a hard floor.
+  // Not enough headroom — scale the plan down to fit. Floor at 0, not a fake
+  // minimum — a near-exhausted budget should be honored down to nothing, not
+  // silently overspent to guarantee a 3-item floor.
   const affordable = Math.max(0, Math.floor(rem / TOKENS_PER_AGENT) - 8 /*scope+search+synth reserve*/)
-  MAX_VERIFY_CLAIMS = Math.max(3, Math.min(MAX_VERIFY_CLAIMS, Math.floor(affordable / VOTES_PER_CLAIM)))
-  MAX_FETCH = Math.max(3, Math.min(MAX_FETCH, affordable))
+  MAX_VERIFY_CLAIMS = Math.max(0, Math.min(MAX_VERIFY_CLAIMS, Math.floor(affordable / VOTES_PER_CLAIM)))
+  MAX_FETCH = Math.max(0, Math.min(MAX_FETCH, affordable))
   if (rem < 60000) VOTES_PER_CLAIM = 2
   log("budget tight (" + Math.round(rem / 1000) + "k left) → trimmed to fetch≤" + MAX_FETCH + ", claims≤" + MAX_VERIFY_CLAIMS + ", votes=" + VOTES_PER_CLAIM)
 }
@@ -330,13 +333,16 @@ const voted = (await parallel(
       )
     ).then(verdicts => {
       // A vote can be null (user-skip or agent error) — treat as no vote cast.
-      //   survives  — quorum of valid votes AND fewer than REFUTATIONS_REQUIRED refuting
+      //   survives  — quorum of valid votes, fewer than REFUTATIONS_REQUIRED refuting,
+      //               AND a strict majority of valid votes don't refute (a 1-1 tie under
+      //               votes=2 is neither confirmed nor refuted — it's unverified)
       //   isRefuted — ≥REFUTATIONS_REQUIRED refute votes (adjudicated against on merit)
-      //   otherwise — unverified: too few valid votes to adjudicate (verifier agents errored)
+      //   otherwise — unverified: too few valid votes, or a tie, to adjudicate
       const valid = verdicts.filter(Boolean)
       const refuted = valid.filter(v => v.refuted).length
+      const nonRefuted = valid.length - refuted
       const errored = VOTES_PER_CLAIM - valid.length
-      const survives = valid.length >= REFUTATIONS_REQUIRED && refuted < REFUTATIONS_REQUIRED
+      const survives = valid.length >= REFUTATIONS_REQUIRED && refuted < REFUTATIONS_REQUIRED && nonRefuted > refuted
       const isRefuted = refuted >= REFUTATIONS_REQUIRED
       const mark = survives ? "✓" : isRefuted ? "✗" : "?"
       log("\"" + claim.claim.slice(0, 50) + "…\": " + (valid.length - refuted) + "-" + refuted + (errored > 0 ? " (" + errored + " errored)" : "") + " " + mark)

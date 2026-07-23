@@ -37,6 +37,9 @@ Workflow({
 
 Override guardrails by passing an object as `args` — see [`skills/deep-research/SKILL.md`](skills/deep-research/SKILL.md).
 
+The skill saves the finished report to `docs/deep-research/<slug>.md` so it survives past the
+session that produced it.
+
 ## Install
 
 ```
