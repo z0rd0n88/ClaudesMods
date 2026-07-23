@@ -1,6 +1,6 @@
 ---
 name: chiquita
-description: Makes a doc, spec, plan, or response chiquita — cuts fluff and structural padding while preserving every fact and decision — for prose, not code (simplify) or an ongoing terse mode (caveman)
+description: 'Makes a doc, spec, plan, or response chiquita — cuts fluff/padding, keeps every fact. Use for "make this concise", "trim/condense this" — not code (simplify), not an ongoing mode (caveman)'
 ---
 
 # Chiquita
