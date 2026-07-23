@@ -18,9 +18,9 @@ A brain-dump is a low-friction running log: activate once, and the agent keeps o
 
 ## Concurrency & append-only
 
-The doc is a flat chronological log. Every entry is a timestamped, session-labeled block appended with a single shell `>>` — the skill never opens the file for editing. That means:
+The doc is a flat chronological log. Every entry is a timestamped, session-labeled block appended in one `printf` call (one `write(2)` syscall on the append-mode fd) — the skill never opens the file for editing. That means:
 
-- **Multiple sessions, safely.** Two Claude sessions in the same repo today append to the same file; their blocks stay intact and interleave only by time. No read-before-edit races.
+- **Multiple sessions, safely.** Two Claude sessions in the same repo today append to the same file; their blocks stay intact and interleave only by time, since each block is written in a single syscall rather than several. No read-before-edit races. The file is seeded once via a `noclobber` create, so two sessions starting at the same instant can't both truncate it.
 - **Append-only.** Existing entries are never rewritten, reordered, or deleted.
 - **Session-tagged.** Each block carries a short session label so you can tell concurrent sessions apart.
 
