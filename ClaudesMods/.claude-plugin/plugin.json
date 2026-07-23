@@ -15,6 +15,7 @@
   ],
   "skills": [
     "./baton/skills",
+    "./big-brain-dumper/skills",
     "./code-rinse-repeat/skills",
     "./daily-loop/skills",
     "./edit-agents/skills",
@@ -32,6 +33,7 @@
   ],
   "commands": [
     "./baton/commands",
+    "./big-brain-dumper/commands",
     "./code-rinse-repeat/commands",
     "./i-cant-even/commands",
     "./idea-autopsy/commands",
