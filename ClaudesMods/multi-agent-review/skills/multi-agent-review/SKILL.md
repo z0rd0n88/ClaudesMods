@@ -692,22 +692,19 @@ Iterations cap: <max>
 
 Additionally:
 
-1. **Post a single PR comment** summarizing the loop's actions: total rounds, fixes applied with commit refs, items deferred with reasoning, and any items left unresolved. Use `gh pr comment <ref> --body ...`.
-2. **Post detailed per-round findings** (§10.7a) — one PR comment per completed round, each with collapsible sections for each reviewer's full findings by severity. This ensures traceability and preserves the evolution of findings across rounds.
-3. **File a follow-up issue** for every deferred MEDIUM that survives the loop (LOW items get inlined into the PR comment instead — don't pollute the issue tracker with style nits).
+1. **Post a single PR comment** with `gh pr comment <ref> --body ...` containing both the loop summary (as above) AND, appended below it, the per-round detail from §10.7a — one comment total, not one per round. This keeps the full audit trail on the PR without flooding the thread.
+2. **File a follow-up issue** for every deferred MEDIUM that survives the loop (LOW items get inlined into the PR comment instead — don't pollute the issue tracker with style nits).
 
-### 10.7a Detailed per-round findings (PR comments)
+### 10.7a Per-round detail (appended to the same comment)
 
-For each completed round (1..N), post a separate PR comment with this structure:
+Below the final-report body (§10.7's structured report), append one collapsible section per round that actually produced findings or changed the verdict — skip a round only if it's a bare repeat APPROVE with nothing new to show, since the final report above already states the outcome:
 
 ```markdown
-### Round <N> — <VERDICT>
+## Per-round detail
 
-Reviewers: <names in roster order>
-
-<for each reviewer in the round>
+<for each round 1..N with findings or a verdict change>
 <details>
-<summary><strong><reviewer-name></strong> — <VERDICT></summary>
+<summary>Round <N> — <VERDICT></summary>
 
 #### CRITICAL
 - none / <each finding with file:line, description, suggested fix>
@@ -722,18 +719,21 @@ Reviewers: <names in roster order>
 - none / <each finding with file:line, description, suggested fix>
 
 #### Notes
-- <confidence / disagreements / tool issues>
+- <round's Notes: tool-availability flags, reviewer disagreements — exactly the `## Notes` block the round's subagent returned per §10.2 step 2>
 
 </details>
-<end for each reviewer>
+<end for each round>
 ```
 
-**Purpose:** Each round's full findings are persisted on the PR for future reference, context, and audit trail. Readers can see exactly what each reviewer assessed in each round and when the verdict changed.
+**Scope note:** this is *per-round* detail, not *per-reviewer* — the round subagent's return schema (§10.2 step 2) is one aggregated VERDICT + severity-bucketed findings list per round, with no per-reviewer attribution. Don't invent a reviewer-by-reviewer breakdown the coordinator was never given; if that attribution is wanted later, the round schema needs a `## By reviewer` section added first.
+
+**Size guard:** GitHub caps a single comment body at 65,536 characters. Before posting, estimate the combined length; if it would exceed ~55,000 chars (headroom for the summary), drop the oldest rounds' `<details>` blocks first (they're superseded by later rounds' findings anyway) and add a one-line note stating how many earlier rounds were omitted and why — never truncate silently.
+
+**Failure handling:** if `gh pr comment` fails (rate limit, permissions, network), retry once; if it still fails, fall back to printing the full comment body to the user with a note that it could not be posted, so the record isn't lost entirely.
 
 **Notes:**
-- Use `<details>` tags to keep the PR thread readable (reviewers' findings are collapsible by default).
-- Post these comments **after** the main loop-summary comment (§10.7 step 1) so the summary appears first, then the details follow.
-- Include even APPROVE verdicts so there is a complete record.
+- Use `<details>` tags to keep the PR thread readable.
+- Include even an all-APPROVE round's entry only if it's the round that ended the loop (so the reader sees the closing state); earlier bare-repeat APPROVE rounds are redundant with the final verdict and can be skipped per the scope rule above.
 
 ## 11. Error handling
 
