@@ -31,15 +31,12 @@ When a multi-agent skill needs to resolve an agent name (e.g. `python-reviewer`)
 
 ## Selection heuristics (when the skill picks the roster)
 
-When a skill auto-selects specialists (no explicit roster flag), it runs the
-**context-aware selector** in `context-aware-selection.md`, which resolves each
-active lane through `lane-agent-table.md`. The legacy hierarchy below is retained
-as the selector's semantic-matcher ordering when a lane is unmapped:
+For build/review skills that auto-select specialists (xmad, total-review's mode matrix):
 
-1. Generic baseline (`code-reviewer`) — lane `L-BASELINE`
-2. Stack overlay (`python-reviewer`, `typescript-reviewer`, …) — lane `L-LANG:*`
-3. Domain lenses (`sql-pro`, `security-reviewer`, …) — the signal-activated lanes
-4. Roster caps — hard 4 build / soft 6 per slice review (unchanged)
+- **Generic baseline first.** Every roster starts with a stack-agnostic lens (`code-reviewer` for review, `tdd-guide` for build).
+- **Stack overlay second.** Pin the stack at scaffold time (`python`/`kotlin`/`typescript`); append the matching idiom reviewer (`python-reviewer` / `kotlin-reviewer` / `typescript-reviewer`).
+- **Domain lenses third.** Add domain-specific reviewers when the target spans their concern (e.g. `sql-pro` when `*.sql` is touched; `security-reviewer` when auth/IO touched; `silent-failure-hunter` for application-layer work).
+- **Cap the roster.** Hard cap 4 for build (xmad); soft cap 6 per slice for review (total-review). Beyond that, the synthesizer struggles to merge coherently.
 
 ## Failure modes
 

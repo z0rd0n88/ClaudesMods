@@ -25,8 +25,6 @@ This skill is one of three (alongside `total-review` and `multi-agent-review`) t
 - [`refs/multi-agent/fanout-consolidation.md`](../../refs/multi-agent/fanout-consolidation.md) — the parallel-fan-out and synthesis contract that the RED/GREEN/REFACTOR rounds and `ecc-code-architect` synthesis pass instantiate.
 - [`refs/multi-agent/agent-catalog-lookup.md`](../../refs/multi-agent/agent-catalog-lookup.md) — how Phase 5.4 auto-selection and `--agents <csv>` resolve names against the project active catalog and the user-scope parked tier.
 - [`refs/multi-agent/spec-injection.md`](../../refs/multi-agent/spec-injection.md) — the spec IS the target of this skill; the specialist briefs MUST carry it under the canonical heading from the ref so "the change must satisfy this" is a first-class round constraint, not a paraphrased summary.
-- [`refs/multi-agent/context-aware-selection.md`](../../refs/multi-agent/context-aware-selection.md) — the lane-based selector Phase 3 Step B falls back to when `--agents` is omitted.
-- [`refs/multi-agent/lane-agent-table.md`](../../refs/multi-agent/lane-agent-table.md) — the deterministic lane→agent resolver the selector above uses.
 
 The orchestrating Claude **IS** the manager (no nested manager agent). The manager:
 
@@ -178,13 +176,6 @@ Build a candidate list `[(slug, tier, description)]` where `tier ∈ {project, u
 - Layer match (API → +5 for `api-architect`, `backend-developer`, `ecc-fastapi-reviewer`)
 - Cross-cutting always considered: `ecc-security-reviewer` (+4 baseline; +6 if task touches auth/input/secrets/APIs); `ecc-tdd-guide` or `test-automator` (+5 since TDD is the default discipline)
 - Tie-breakers: prefer ECC-flavored agents (`ecc-*`) for code-quality lanes; prefer specialists over generalists.
-
-Lanes and their agents are resolved via `refs/multi-agent/context-aware-selection.md`
-and `refs/multi-agent/lane-agent-table.md`. The Domain/Layer and cross-cutting
-scores above are the **semantic matcher** used when the deterministic table does
-not map a lane (or its mapped agent is absent from the pool). `--max-agents`
-(default 4) is the CAP; framework agents remain excluded; parked alternatives are
-surfaced in the footnote per Decision #13.
 
 **No tier penalty.** Per Q13, scan both tiers and propose the best regardless of tier. Show parked alternatives as a transparent footnote so user can override.
 
