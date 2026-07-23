@@ -177,6 +177,13 @@ Build a candidate list `[(slug, tier, description)]` where `tier ∈ {project, u
 - Cross-cutting always considered: `ecc-security-reviewer` (+4 baseline; +6 if task touches auth/input/secrets/APIs); `ecc-tdd-guide` or `test-automator` (+5 since TDD is the default discipline)
 - Tie-breakers: prefer ECC-flavored agents (`ecc-*`) for code-quality lanes; prefer specialists over generalists.
 
+Lanes and their agents are resolved via `refs/multi-agent/context-aware-selection.md`
+and `refs/multi-agent/lane-agent-table.md`. The Domain/Layer and cross-cutting
+scores above are the **semantic matcher** used when the deterministic table does
+not map a lane (or its mapped agent is absent from the pool). `--max-agents`
+(default 4) is the CAP; framework agents remain excluded; parked alternatives are
+surfaced in the footnote per Decision #13.
+
 **No tier penalty.** Per Q13, scan both tiers and propose the best regardless of tier. Show parked alternatives as a transparent footnote so user can override.
 
 **Step C — Pick top N (≤ `--max-agents`):** Distinct lanes only; do not pick two agents for the same role.
