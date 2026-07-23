@@ -25,27 +25,6 @@
         "orchestrator", "spec", "brainstorming", "ideation", "productivity",
         "model-routing", "inventory", "session-notes"
       ]
-    },
-    {
-      "name": "claude-md-trim",
-      "source": "./claude-md-trim",
-      "description": "Trim always-loaded agent context files (CLAUDE.md/AGENTS.md) to invariants + pointers — relocate detail to linked docs, verify against ground truth, one PR per repo, multi-repo capable.",
-      "version": "1.0.0",
-      "author": {
-        "name": "z0rd0n88"
-      },
-      "category": "productivity",
-      "keywords": [
-        "claude-md",
-        "agents-md",
-        "context",
-        "prompt-budget",
-        "doc-hygiene",
-        "signal-to-noise",
-        "trim",
-        "relocation",
-        "multi-repo"
-      ]
     }
   ]
 }
