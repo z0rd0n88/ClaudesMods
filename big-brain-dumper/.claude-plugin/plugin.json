@@ -1,0 +1,12 @@
+{
+  "name": "big-brain-dumper",
+  "description": "User-invoked /big-brain-dumper: one append-only brain-dump doc per day per project that every session appends key points, decisions, and action items to. Concurrency-safe, append-only.",
+  "version": "1.0.0",
+  "author": {
+    "name": "z0rd0n88"
+  },
+  "homepage": "https://github.com/z0rd0n88/ClaudesMods/tree/main/big-brain-dumper",
+  "repository": "https://github.com/z0rd0n88/ClaudesMods",
+  "license": "MIT",
+  "keywords": ["brain-dump", "session-log", "daily", "append-only", "key-points", "action-items", "notes", "capture"]
+}
