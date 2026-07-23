@@ -16,6 +16,7 @@
   "skills": [
     "./baton/skills",
     "./big-brain-dumper/skills",
+    "./claude-md-trim/skills",
     "./code-rinse-repeat/skills",
     "./daily-loop/skills",
     "./deep-research/skills",
