@@ -25,6 +25,27 @@
         "orchestrator", "spec", "brainstorming", "ideation", "productivity",
         "model-routing", "inventory", "session-notes"
       ]
+    },
+    {
+      "name": "deep-research",
+      "source": "./deep-research",
+      "description": "Cost-guardrailed deep-research report: fan-out web search + adversarial claim verification + cited synthesis, with cheap models on the bulk stages, a token-budget ceiling, and depth presets.",
+      "version": "1.0.0",
+      "author": {
+        "name": "z0rd0n88"
+      },
+      "category": "productivity",
+      "keywords": [
+        "research",
+        "web-search",
+        "adversarial-verification",
+        "workflow",
+        "fan-out",
+        "cost",
+        "guardrail",
+        "budget",
+        "model-routing"
+      ]
     }
   ]
 }
