@@ -33,6 +33,8 @@ This skill is one of three (alongside `total-review` and `multi-agent-developer`
 - [`refs/multi-agent/agent-catalog-lookup.md`](../../refs/multi-agent/agent-catalog-lookup.md) — how `--reviewers <csv>` names resolve to files in the project active catalog and the user-scope parked tier.
 - [`refs/multi-agent/exclusion-list.md`](../../refs/multi-agent/exclusion-list.md) — pass an exclusion-list file via `--prompt-prelude <path>` to suppress already-tracked findings (the same prelude hook serves as the injection point).
 - [`refs/multi-agent/spec-injection.md`](../../refs/multi-agent/spec-injection.md) — for PR/diff/dir reviews, pass the originating spec/issue via `--prompt-prelude <path>` so reviewers can raise CRITICAL if the diff fails to satisfy the originating intent. The prelude file may concatenate exclusion-list and spec under their respective headings.
+- [`refs/multi-agent/context-aware-selection.md`](../../refs/multi-agent/context-aware-selection.md) — the lane-based selector §4 Defaults falls back to when `--reviewers` is omitted.
+- [`refs/multi-agent/lane-agent-table.md`](../../refs/multi-agent/lane-agent-table.md) — the deterministic lane→agent resolver the selector above uses.
 
 ## 2. When to use
 

@@ -14,8 +14,8 @@ not map, or when a mapped agent is absent from the pool.
    agent names.
 2. **Canonical default table** (below) — the ecosystem-standard names.
 3. **Semantic matcher** — best role-text match in the pool (from
-   `context-aware-selection.md` §5.3). Only reached when neither table resolves to a
-   pool agent.
+   `context-aware-selection.md` §5, Assembly step 3). Only reached when neither table
+   resolves to a pool agent.
 
 For any lane, walk the ordered candidate list and pick the **first name that exists
 in the discovered pool** (project ∪ activated-parked). If none exist, degrade to the
