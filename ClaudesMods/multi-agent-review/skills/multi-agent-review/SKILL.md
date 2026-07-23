@@ -33,6 +33,8 @@ This skill is one of three (alongside `total-review` and `multi-agent-developer`
 - [`refs/multi-agent/agent-catalog-lookup.md`](../../refs/multi-agent/agent-catalog-lookup.md) — how `--reviewers <csv>` names resolve to files in the project active catalog and the user-scope parked tier.
 - [`refs/multi-agent/exclusion-list.md`](../../refs/multi-agent/exclusion-list.md) — pass an exclusion-list file via `--prompt-prelude <path>` to suppress already-tracked findings (the same prelude hook serves as the injection point).
 - [`refs/multi-agent/spec-injection.md`](../../refs/multi-agent/spec-injection.md) — for PR/diff/dir reviews, pass the originating spec/issue via `--prompt-prelude <path>` so reviewers can raise CRITICAL if the diff fails to satisfy the originating intent. The prelude file may concatenate exclusion-list and spec under their respective headings.
+- [`refs/multi-agent/context-aware-selection.md`](../../refs/multi-agent/context-aware-selection.md) — the lane-based selector §4 Defaults falls back to when `--reviewers` is omitted.
+- [`refs/multi-agent/lane-agent-table.md`](../../refs/multi-agent/lane-agent-table.md) — the deterministic lane→agent resolver the selector above uses.
 
 ## 2. When to use
 
@@ -134,11 +136,13 @@ multi-agent-review diff --staged --reviewers ecc-security-reviewer, silent-failu
 ## 4. Defaults
 
 - **Default mode on a `pr` target = loop** (review→fix→re-review, mutating, confirmation-gated). All other targets, and any `--no-loop` run, are one-shot read-only.
-- **Reviewer roster** (when `--reviewers` is omitted, in this order):
-  1. `architect-review`
-  2. `critical-thinking`
-  3. `ecc-silent-failure-hunter`
-  4. `ecc-security-reviewer`
+- **Reviewer roster.** When `--reviewers` is supplied, use it verbatim. When it is
+  omitted, resolve the roster with **context-aware selection** — see
+  `refs/multi-agent/context-aware-selection.md` (lanes/caps) and
+  `refs/multi-agent/lane-agent-table.md` (lane→agent). Review uses the soft cap of
+  6 per slice. If selection cannot run (no resolvable signals), fall back to the
+  static safety-net roster: `architect-review`, `critical-thinking`,
+  `ecc-silent-failure-hunter`, `ecc-security-reviewer`.
 - **Synthesizer**: `knowledge-synthesizer`
 - **Directory file-count cap**: 50 (override with `--max-files <n>`)
 - **Slice fan-out cap**: 6 slices per invocation (override with `--max-slices <n>`); each slice spawns the full roster in parallel.
