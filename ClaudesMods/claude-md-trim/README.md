@@ -15,3 +15,7 @@ These files load into every session's prompt budget. Procedures, config tables, 
 - Every load-bearing fact survives, reachable via a link.
 - Stale facts are corrected with an itemized note in the PR, never silently.
 - Every relative link in touched files is verified with positive per-link output.
+
+## Related
+
+Trims *context files* specifically. For trimming prose/writing, see `chiquita`; for trimming code, see `simplify`.

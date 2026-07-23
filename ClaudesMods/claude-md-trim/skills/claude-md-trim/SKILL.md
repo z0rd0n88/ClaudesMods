@@ -15,7 +15,7 @@ Context files (CLAUDE.md / AGENTS.md / GEMINI.md) load into every session's prom
 
 - A CLAUDE.md exceeds ~150 lines or contains: step-by-step procedures, verbose config tables, incident write-ups, shipped-feature changelogs, "next steps" sections, code examples.
 - Facts in a context file contradict the code or a status doc (drift).
-- When NOT to use: files that are already invariants + pointers; third-party/vendored files; modules slated for deletion (excluding them IS part of this skill's scope rules).
+- When NOT to use: files that are already invariants + pointers; third-party/vendored files. (Modules slated for deletion are still in scope — they're handled via the EXCLUSIONS rule below: identified, listed with a reason, and left unedited, not skipped by not running the skill.)
 
 ## Inputs
 
@@ -28,14 +28,14 @@ Context files (CLAUDE.md / AGENTS.md / GEMINI.md) load into every session's prom
 
 ## Per-Repo Process
 
-**1. Base freshness (do this FIRST).** `git fetch`, then `git rev-list --left-right --count HEAD...origin/<default>`. Fast-forward or rebase onto the current remote default branch. A stale base silently trims content that no longer exists. Check for prior trim attempts (`gh pr list --search "CLAUDE.md trim"`): read them for scope hints only; start from today's default branch and state in the PR that this supersedes them.
+**1. Base freshness (do this FIRST).** `git fetch`, then resolve `<default>` — `git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'` (fallback: `git remote show origin | sed -n 's/.*HEAD branch: //p'`) — then `git rev-list --left-right --count HEAD...origin/<default>`. Fast-forward or rebase onto the current remote default branch. A stale base silently trims content that no longer exists. Check for prior trim attempts (`gh pr list --search "CLAUDE.md trim"`): read them for scope hints only; start from today's default branch and state in the PR that this supersedes them.
 
 **2. Isolation.** Dedicated worktree, feature branch, absolute paths. Never edit the default branch.
 
 **3. Discovery.** Enumerate CONTEXT_FILES; record per-file line counts (the PR needs a before/after table, including untouched and excluded files with reasons); read every in-scope file fully; note recent history (`git log --oneline -- '*CLAUDE.md'`) — recent rewrites/renames change what "current" means.
 
 **4. Mine session + git logs for missing signal.** The trim removes noise; this step finds what the context files *should* say but don't. Sources:
-- **Git log:** repeated fix subjects (`git log --pretty='%s' | sort | uniq -c | sort -rn` filtered to `fix|revert`) — a defect fixed twice is a regression class worth a gotcha. Most-churned files (`git log --name-only --pretty=format: -150 | sort | uniq -c | sort -rn`) show where guidance drifts or is missing.
+- **Git log:** repeated fix subjects (`git log --pretty='%s' | grep -iE 'fix|revert' | sort | uniq -c | sort -rn`) — a defect fixed twice is a regression class worth a gotcha. Most-churned files (`git log --name-only --pretty=format: -150 | sort | uniq -c | sort -rn`) show where guidance drifts or is missing.
 - **Session logs / transcripts** (e.g. `~/.claude/projects/<project>/*.jsonl`): aggregate tool errors (`is_error` results), user rejections, and correction-shaped user messages; also read any distilled auto-memory index. Aggregate with a script — never page raw transcripts into context.
 - **Landing filter — a mined candidate is added only if it passes all three:** (a) verified against ground truth (read the actual fix commits / code before writing the gotcha); (b) not already documented at its point of use (a trap covered in the relevant skill/guide/tracked issue does not get re-added); (c) placed per the hygiene rule — gotcha/guide docs by default, the context file itself only if every code change needs it loaded.
 
