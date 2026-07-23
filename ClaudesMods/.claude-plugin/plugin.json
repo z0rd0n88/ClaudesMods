@@ -16,6 +16,7 @@
   "skills": [
     "./baton/skills",
     "./big-brain-dumper/skills",
+    "./chiquita/skills",
     "./claude-md-trim/skills",
     "./code-rinse-repeat/skills",
     "./daily-loop/skills",
@@ -36,6 +37,7 @@
   "commands": [
     "./baton/commands",
     "./big-brain-dumper/commands",
+    "./chiquita/commands",
     "./code-rinse-repeat/commands",
     "./i-cant-even/commands",
     "./idea-autopsy/commands",
