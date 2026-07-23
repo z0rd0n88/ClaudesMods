@@ -21,8 +21,8 @@ From an Opus session that is extremely expensive, extremely fast.
 | Transparency | — | upfront cost estimate; dropped sources/claims logged, never silent |
 
 Adversarial rigor is preserved — verification still runs multiple skeptical voters per claim
-(default-refute-if-uncertain); the savings come from running those voters on a cheap model and
-bounding how many run, not from weakening the check.
+(default-refute-if-uncertain); the savings come from running those voters on a mid-tier model
+(`sonnet`, not the session's frontier model) and bounding how many run, not from weakening the check.
 
 ## Usage
 

@@ -1,6 +1,6 @@
 ---
 name: deep-research
-description: Run a cost-guardrailed deep-research report — fan-out web search, adversarial claim verification, cited synthesis — with cheap models on the bulk stages and a token-budget ceiling.
+description: Run a cost-guardrailed deep-research report — fan-out web search, adversarial claim verification, cited synthesis — with a mid-tier model on the bulk stages and a token-budget ceiling.
 argument-hint: <research question>
 user-invocable: true
 ---

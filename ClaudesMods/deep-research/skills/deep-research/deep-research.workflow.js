@@ -1,13 +1,13 @@
 export const meta = {
   name: 'deep-research',
-  description: 'Deep research harness — fan-out web searches, fetch sources, adversarially verify claims, synthesize a cited report. Cost-guardrailed: cheap models on the high-volume stages, a token-budget ceiling, and depth presets.',
+  description: 'Deep research harness — fan-out web searches, fetch sources, adversarially verify claims, synthesize a cited report. Cost-guardrailed: mid-tier model on the high-volume stages, a token-budget ceiling, and depth presets.',
   whenToUse: 'When the user wants a deep, multi-source, fact-checked research report on any topic. BEFORE invoking, check if the question is specific enough to research directly — if underspecified (e.g., "what car to buy" without budget/use-case/region), ask 2-3 clarifying questions to narrow scope. Then pass the refined question as args (a string), or an object { question, depth, maxFetch, maxClaims, votes, models } to override the cost guardrails.',
-  phases: [{"title":"Scope","detail":"Decompose question (from args) into search angles"},{"title":"Search","detail":"parallel WebSearch agents, one per angle (cheap model)"},{"title":"Fetch","detail":"URL-dedup, fetch capped sources, extract falsifiable claims (cheap model)"},{"title":"Verify","detail":"multi-vote adversarial verification per claim, budget-gated (cheap model)"},{"title":"Synthesize","detail":"Merge semantic dupes, rank by confidence, cite sources (strong model)"}],
+  phases: [{"title":"Scope","detail":"Decompose question (from args) into search angles"},{"title":"Search","detail":"parallel WebSearch agents, one per angle (mid-tier model)"},{"title":"Fetch","detail":"URL-dedup, fetch capped sources, extract falsifiable claims (mid-tier model)"},{"title":"Verify","detail":"multi-vote adversarial verification per claim, budget-gated (mid-tier model)"},{"title":"Synthesize","detail":"Merge semantic dupes, rank by confidence, cite sources (strong model)"}],
 }
 
 // deep-research (guardrailed): Scope → pipeline(Search → URL-dedup → Fetch+Extract) → multi-vote Verify → Synthesize
 // Ported from the original bughunter-derived harness. Guardrails added:
-//   G1  per-agent model pins   — high-volume mechanical stages run on a CHEAP model; only Scope/Synthesize get a strong one.
+//   G1  per-agent model pins   — high-volume mechanical stages run on a MID-TIER model (sonnet); only Synthesize gets a strong one (opus).
 //   G2  token-budget ceiling   — reads the `budget` global; trims caps up front and hard-gates the verify fan-out.
 //   G3  depth presets + caps   — lower defaults, all overridable via an args object.
 //   +   upfront cost estimate  — logs the worst-case agent count before spending anything (no silent truncation).
@@ -229,6 +229,8 @@ const searchResults = await pipeline(
   }),
 
   searchResult => {
+    // Dead/skipped search agent → null from the stage above; nothing to dedup or fetch for this angle.
+    if (!searchResult) return null
     const sorted = [...searchResult.results].sort((a, b) => relRank[a.relevance] - relRank[b.relevance])
     const novel = sorted.filter(r => {
       const key = normURL(r.url)
