@@ -692,8 +692,48 @@ Iterations cap: <max>
 
 Additionally:
 
-1. **Post a single PR comment** summarizing the loop's actions: total rounds, fixes applied with commit refs, items deferred with reasoning, and any items left unresolved. Use `gh pr comment <ref> --body ...`.
+1. **Post a single PR comment** with `gh pr comment <ref> --body ...` containing both the loop summary (as above) AND, appended below it, the per-round detail from §10.7a — one comment total, not one per round. This keeps the full audit trail on the PR without flooding the thread.
 2. **File a follow-up issue** for every deferred MEDIUM that survives the loop (LOW items get inlined into the PR comment instead — don't pollute the issue tracker with style nits).
+
+### 10.7a Per-round detail (appended to the same comment)
+
+Below the final-report body (§10.7's structured report), append one collapsible section per round that actually produced findings or changed the verdict — skip a round only if it's a bare repeat APPROVE with nothing new to show, since the final report above already states the outcome:
+
+```markdown
+## Per-round detail
+
+<for each round 1..N with findings or a verdict change>
+<details>
+<summary>Round <N> — <VERDICT></summary>
+
+#### CRITICAL
+- none / <each finding with file:line, description, suggested fix>
+
+#### HIGH
+- none / <each finding with file:line, description, suggested fix>
+
+#### MEDIUM
+- none / <each finding with file:line, description, suggested fix>
+
+#### LOW
+- none / <each finding with file:line, description, suggested fix>
+
+#### Notes
+- <round's Notes: tool-availability flags, reviewer disagreements — exactly the `## Notes` block the round's subagent returned per §10.2 step 2>
+
+</details>
+<end for each round>
+```
+
+**Scope note:** this is *per-round* detail, not *per-reviewer* — the round subagent's return schema (§10.2 step 2) is one aggregated VERDICT + severity-bucketed findings list per round, with no per-reviewer attribution. Don't invent a reviewer-by-reviewer breakdown the coordinator was never given; if that attribution is wanted later, the round schema needs a `## By reviewer` section added first.
+
+**Size guard:** GitHub caps a single comment body at 65,536 characters. Before posting, estimate the combined length; if it would exceed ~55,000 chars (headroom for the summary), drop the oldest rounds' `<details>` blocks first (they're superseded by later rounds' findings anyway) and add a one-line note stating how many earlier rounds were omitted and why — never truncate silently.
+
+**Failure handling:** if `gh pr comment` fails (rate limit, permissions, network), retry once; if it still fails, fall back to printing the full comment body to the user with a note that it could not be posted, so the record isn't lost entirely.
+
+**Notes:**
+- Use `<details>` tags to keep the PR thread readable.
+- Include even an all-APPROVE round's entry only if it's the round that ended the loop (so the reader sees the closing state); earlier bare-repeat APPROVE rounds are redundant with the final verdict and can be skipped per the scope rule above.
 
 ## 11. Error handling
 
