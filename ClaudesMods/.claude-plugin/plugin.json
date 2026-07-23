@@ -1,0 +1,53 @@
+{
+  "name": "ClaudesMods",
+  "description": "z0rd0n88's Claude Code mods, unified into a single plugin: idea review/critique, multi-agent build & review loops, spec authoring, session orchestration, and productivity utilities.",
+  "version": "1.0.0",
+  "author": {
+    "name": "z0rd0n88"
+  },
+  "homepage": "https://github.com/z0rd0n88/ClaudesMods",
+  "repository": "https://github.com/z0rd0n88/ClaudesMods",
+  "license": "MIT",
+  "keywords": [
+    "critique", "review", "verdict", "multi-agent", "code-review", "tdd",
+    "orchestrator", "spec", "brainstorming", "ideation", "productivity",
+    "model-routing", "inventory", "session-notes"
+  ],
+  "skills": [
+    "./baton/skills",
+    "./code-rinse-repeat/skills",
+    "./daily-loop/skills",
+    "./edit-agents/skills",
+    "./i-cant-even/skills",
+    "./idea-autopsy/skills",
+    "./idea-nebula/skills",
+    "./idea-panel/skills",
+    "./inventory/skills",
+    "./multi-agent-developer/skills",
+    "./multi-agent-review/skills",
+    "./scratchpad/skills",
+    "./spec-tacular/skills",
+    "./total-review/skills",
+    "./weekly-wrapup/skills"
+  ],
+  "commands": [
+    "./baton/commands",
+    "./code-rinse-repeat/commands",
+    "./i-cant-even/commands",
+    "./idea-autopsy/commands",
+    "./idea-nebula/commands",
+    "./idea-panel/commands",
+    "./inventory/commands",
+    "./llm-fit-check/commands",
+    "./multi-agent-developer/commands",
+    "./multi-agent-review/commands",
+    "./scratchpad/commands",
+    "./spec-tacular/commands",
+    "./total-review/commands",
+    "./weekly-wrapup/commands"
+  ],
+  "hooks": [
+    "./llm-fit-check/hooks/hooks.json",
+    "./inventory/hooks/hooks.json"
+  ]
+}
