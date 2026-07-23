@@ -20,9 +20,17 @@ Two components, cleanly divided:
    a. Active lanes come from §3 below.
    b. Each lane's agent comes from the deterministic table (per-repo → canonical),
       then the semantic matcher for anything unmapped.
-3. Static safety-net roster → only if selection cannot run (no signals resolvable):
+3. Static safety-net roster → used whenever selection can't produce a real team:
+   - **no signals resolvable** (context-aware selection can't run at all), OR
+   - **signals resolve but no lane can be filled** — every active lane, including
+     `L-BASELINE`, degrades to no pool agent (§6). A resolved lane set with an empty
+     pool is not "selection succeeded with zero agents"; it's selection failing to
+     produce a usable team, so it falls to the same safety net as the no-signal case.
    - review: `architect-review, critical-thinking, ecc-silent-failure-hunter, ecc-security-reviewer`
    - build: `code-reviewer, ecc-security-reviewer, ecc-tdd-guide, critical-thinking`
+   - If even the safety-net names aren't in the pool, that's a genuinely empty pool —
+     hard-fail with the same message `--reviewers`/`--agents` uses for an unresolvable
+     name, rather than emitting a zero-agent team silently.
 
 ## 2. Pool discovery (unchanged from agent-catalog-lookup)
 
@@ -109,9 +117,15 @@ Assembly:
 - ≥1 `L-LANG`/domain specialist present when there is a clear primary language/domain.
 - If CAP < FLOORS + FORCED, drop the lowest-risk **optional** lane only — never a
   floor or forced lane — and record what was dropped.
-- **Degrade loudly.** If a chosen lane has no matching pool agent, fall back to
-  `L-BASELINE` and say so in the rationale. If a FORCED lane is uncoverable, state
-  that gap explicitly rather than shipping the team without it.
+- **Degrade loudly.** If a chosen **optional** lane has no matching pool agent, fall
+  back to `L-BASELINE` and say so in the rationale — the team still ships.
+- **FORCED lanes hard-fail, they don't silently degrade.** A FORCED lane exists
+  because a `risk_flag` or repo invariant made it mandatory (e.g. keys/signing →
+  `L-CRYPTO`). If it's uncoverable, do **not** ship the team without it: stop and
+  state the gap explicitly, the same way an unresolvable name in `--reviewers` hard-
+  fails rather than silently dropping the reviewer. (If `L-BASELINE` itself — a
+  floor, not a FORCED lane — is uncoverable, that's the empty-pool case in §1 rule 3,
+  not this rule.)
 
 ## 7. Output contract
 
@@ -121,5 +135,11 @@ Emit, in priority order (floors + forced first):
 3. A parked-alternatives footnote when a better candidate sits in `agents-parked`
    (per Decision #13), so the user can `activate <slug>` and re-run.
 
-Deterministic for the same context. Log the roster + reasons so a human can see why
-this team was chosen and override with `--reviewers` / `--agents` next run.
+**What's actually deterministic:** lane→agent *resolution* (§lane-agent-table.md) is a
+pure function of the active lane set and the discovered pool — same lanes + same pool
+always resolve to the same roster. Lane *activation* (§4-5 above) is not a deterministic
+function of the input; "stop when the picture is confident" and the domain/risk-flag
+extraction are model judgment calls, so two runs against a genuinely identical diff
+should usually agree but aren't guaranteed to bit-for-bit. Log the roster + reasons so
+a human can see why this team was chosen and override with `--reviewers` / `--agents`
+next run.
