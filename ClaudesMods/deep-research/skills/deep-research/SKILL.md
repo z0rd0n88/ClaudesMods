@@ -44,7 +44,7 @@ Call the Workflow tool with the script path and the question as `args`:
 
 ```
 Workflow({
-  scriptPath: "${CLAUDE_PLUGIN_ROOT}/skills/deep-research/deep-research.workflow.js",
+  scriptPath: "${CLAUDE_PLUGIN_ROOT}/deep-research/skills/deep-research/deep-research.workflow.js",
   args: "<the refined research question>"
 })
 ```
@@ -53,7 +53,7 @@ To override the guardrails, pass an **object** instead of a string:
 
 ```
 Workflow({
-  scriptPath: "${CLAUDE_PLUGIN_ROOT}/skills/deep-research/deep-research.workflow.js",
+  scriptPath: "${CLAUDE_PLUGIN_ROOT}/deep-research/skills/deep-research/deep-research.workflow.js",
   args: {
     question: "<question>",
     depth: "quick" | "standard" | "deep",   // preset; default "standard"

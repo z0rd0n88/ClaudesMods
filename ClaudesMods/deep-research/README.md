@@ -30,7 +30,7 @@ Invoke the `deep-research` skill (or call the Workflow tool directly):
 
 ```
 Workflow({
-  scriptPath: "${CLAUDE_PLUGIN_ROOT}/skills/deep-research/deep-research.workflow.js",
+  scriptPath: "${CLAUDE_PLUGIN_ROOT}/deep-research/skills/deep-research/deep-research.workflow.js",
   args: "How reliable is intermittent fasting for weight loss in 2026?"
 })
 ```
