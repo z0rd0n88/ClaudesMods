@@ -1,6 +1,6 @@
 ---
 name: chiquita
-description: 'Makes a doc, spec, plan, or response chiquita — cuts fluff/padding, keeps every fact. Use for "make this concise", "trim/condense this" — not code (simplify), not an ongoing mode (caveman)'
+description: 'Cuts fluff and padding from a doc, spec, plan, or response while keeping every fact, number, and decision — for "make this concise"/"trim this" requests; not code (use simplify) and not an ongoing conversation mode (use caveman)'
 ---
 
 # Chiquita
@@ -13,6 +13,10 @@ file, a spec, a plan, a response draft, a pasted string.
 
 1. **Read the whole target** before touching it. Completion criterion: the full
    text is in view, not just the parts that look padded.
+
+   **Output location:** a pasted-in string or chat response is trimmed and
+   returned in chat. A file path target is edited in place (the file itself,
+   not a chat copy) — say so before editing, and note the path afterward.
 
 2. **Cut word- and sentence-level filler.** Hedging ("just", "really",
    "basically"), pleasantries, throat-clearing, restatement of what a heading

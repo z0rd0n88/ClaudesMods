@@ -40,6 +40,9 @@ skill triggers on that phrasing too.
   that for a diff; use `chiquita` for prose.
 - **`caveman`** — an ongoing terse *conversation mode*. `chiquita` is a one-shot
   edit applied to an existing piece of writing, not a standing mode.
+- **`claude-md-trim`** — trims always-loaded agent context files (CLAUDE.md/
+  AGENTS.md/GEMINI.md) specifically, with its own relocation-not-deletion
+  process. Use that for context files; use `chiquita` for prose in general.
 
 ## Layout
 
