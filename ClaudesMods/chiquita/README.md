@@ -55,4 +55,4 @@ chiquita/
 
 ## License
 
-[MIT](../LICENSE).
+[MIT](../../LICENSE).
