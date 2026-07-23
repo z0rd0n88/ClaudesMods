@@ -14,7 +14,7 @@ From an Opus session that is extremely expensive, extremely fast.
 
 | Lever | Before | After |
 |---|---|---|
-| Model per stage | session model everywhere (~90 agents) | `haiku` on search/fetch/verify; `sonnet` scope; `opus` synthesis |
+| Model per stage | session model everywhere (~90 agents) | `sonnet` on scope/search/fetch/verify; `opus` synthesis |
 | Token ceiling | none | reads the `budget` global; trims caps + hard-gates the verify fan-out |
 | Caps | fixed 15 / 25 / 3 | depth presets — `quick` 5/6/2 · `standard` 8/12/3 · `deep` 15/25/3 |
 | Overrides | none | `args` object: `depth`, `maxFetch`, `maxClaims`, `votes`, `models` |

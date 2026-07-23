@@ -28,12 +28,12 @@ const P = PRESETS[DEPTH] || PRESETS.standard
 
 // ─── G1: model pins — the single biggest cost lever ───
 // Search/Fetch/Verify are mechanical, schema-constrained, and run in bulk (dozens of calls):
-// a cheap model handles them fine. Only decomposition (Scope) and the final Synthesis get a strong model.
+// sonnet handles them well without the frontier price. Only the final Synthesis gets opus.
 const MODELS = Object.assign({
   scope:      "sonnet",
-  search:     "haiku",
-  fetch:      "haiku",
-  verify:     "haiku",
+  search:     "sonnet",
+  fetch:      "sonnet",
+  verify:     "sonnet",
   synthesize: "opus",
 }, A.models || {})
 

@@ -20,10 +20,9 @@ a guardrailed port that keeps the adversarial rigor but controls the spend.
 
 ## Guardrails (built into the script)
 
-- **Cheap models on the high-volume stages.** Search / fetch / verify run on `haiku`;
-  only scope-decomposition (`sonnet`) and final synthesis (`opus`) use a strong model.
-  This is the biggest cost lever — the mechanical, schema-constrained stages don't need a
-  frontier model.
+- **Mid-tier model on the high-volume stages.** Scope / search / fetch / verify all run on
+  `sonnet`; only final synthesis uses `opus`. This is the biggest cost lever — the mechanical,
+  schema-constrained stages don't need a frontier model.
 - **Token-budget ceiling.** The script reads the turn's `budget` global. If a `+N` budget
   was set, it trims the fetch/claim/vote caps up front and hard-gates the verify fan-out so a
   large claim pool can't blow the ceiling. Trimmed items are logged, never silently dropped.
