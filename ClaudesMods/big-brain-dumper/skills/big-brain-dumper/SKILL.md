@@ -1,6 +1,6 @@
 ---
 name: big-brain-dumper
-description: User-invoked only. Maintains one append-only brain-dump doc per day per project; every session dumps key points, decisions, and action items into the same day's file.
+description: User-invoked only — maintains one append-only brain-dump doc per day per project, collecting key points, decisions, and action items from every session into the same day's file.
 disable-model-invocation: true
 ---
 

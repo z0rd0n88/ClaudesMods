@@ -27,7 +27,8 @@ a guardrailed port that keeps the adversarial rigor but controls the spend.
   was set, it trims the fetch/claim/vote caps up front and hard-gates the verify fan-out so a
   large claim pool can't blow the ceiling. Trimmed items are logged, never silently dropped.
 - **Depth presets** (default `standard`): `quick` (5 fetch / 6 claims / 2 votes),
-  `standard` (8 / 12 / 3), `deep` (15 / 25 / 3). Lower than the old fixed 15 / 25 / 3.
+  `standard` (8 / 12 / 3), `deep` (15 / 25 / 3) — `deep` matches the old fixed cap exactly
+  (it's the ceiling, unchanged); `quick`/`standard` are the new, cheaper defaults.
 - **Upfront cost estimate.** Logs the worst-case agent count and active caps before spending.
 
 ## Before invoking
@@ -75,3 +76,10 @@ The workflow returns a structured object: `summary`, `findings` (each with confi
 sources), `refuted` and `unverified` claims (for transparency), `sources`, and a `stats` block
 (agent count, caps hit, claims dropped to the cap). Relay the summary and findings to the user
 with citations; surface the caveats and anything the cost cap left unverified.
+
+**Persist the report.** A research report is expensive to produce and easy to lose once it
+scrolls out of context. Write the returned object to
+`docs/deep-research/<slug>.md` (slug derived from the question — short, kebab-case), formatted
+as a Markdown report: title, summary, findings with confidence/sources, refuted/unverified
+sections, and the stats block. Create `docs/deep-research/` if it doesn't exist. Mention the
+saved path to the user.
