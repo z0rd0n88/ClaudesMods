@@ -41,7 +41,6 @@ const MODELS = Object.assign({
 let MAX_FETCH         = A.maxFetch  ?? P.fetch
 let MAX_VERIFY_CLAIMS = A.maxClaims ?? P.claims
 let VOTES_PER_CLAIM   = A.votes     ?? P.votes
-const REFUTATIONS_REQUIRED = 2  // ≥2 refuting votes kill a claim (also the min valid votes to adjudicate "survives")
 
 // ─── G2: token-budget ceiling — trim caps up front if the turn's budget is tight ───
 // budget.total is null when no "+N"-style target was set; then remaining() is Infinity and nothing is trimmed.
@@ -60,6 +59,14 @@ function budgetTrim() {
   log("budget tight (" + Math.round(rem / 1000) + "k left) → trimmed to fetch≤" + MAX_FETCH + ", claims≤" + MAX_VERIFY_CLAIMS + ", votes=" + VOTES_PER_CLAIM)
 }
 budgetTrim()
+
+// Kill threshold scales with the FINAL vote count (after any budget trim) so rigor is
+// consistent across depths: a MAJORITY of votes refuting kills the claim. At votes=3 that's
+// 2 (unchanged); at votes=2 (quick, or a budget-trimmed run) a single specific refutation is
+// decisive — a fixed 2 would silently require UNANIMOUS refutation to kill anything at 2 votes.
+// Decoupled from the survive-quorum so the survive/refute logic stays well-defined at 2 votes.
+const REFUTATIONS_REQUIRED = Math.max(1, Math.ceil(VOTES_PER_CLAIM / 2))
+const MIN_VALID_VOTES = Math.min(2, VOTES_PER_CLAIM)  // quorum of non-errored votes needed to adjudicate "survives"
 
 // ─── Schemas ───
 const SCOPE_SCHEMA = {
@@ -330,13 +337,13 @@ const voted = (await parallel(
       )
     ).then(verdicts => {
       // A vote can be null (user-skip or agent error) — treat as no vote cast.
-      //   survives  — quorum of valid votes AND fewer than REFUTATIONS_REQUIRED refuting
+      //   survives  — quorum of valid votes (MIN_VALID_VOTES) AND fewer than REFUTATIONS_REQUIRED refuting
       //   isRefuted — ≥REFUTATIONS_REQUIRED refute votes (adjudicated against on merit)
       //   otherwise — unverified: too few valid votes to adjudicate (verifier agents errored)
       const valid = verdicts.filter(Boolean)
       const refuted = valid.filter(v => v.refuted).length
       const errored = VOTES_PER_CLAIM - valid.length
-      const survives = valid.length >= REFUTATIONS_REQUIRED && refuted < REFUTATIONS_REQUIRED
+      const survives = valid.length >= MIN_VALID_VOTES && refuted < REFUTATIONS_REQUIRED
       const isRefuted = refuted >= REFUTATIONS_REQUIRED
       const mark = survives ? "✓" : isRefuted ? "✗" : "?"
       log("\"" + claim.claim.slice(0, 50) + "…\": " + (valid.length - refuted) + "-" + refuted + (errored > 0 ? " (" + errored + " errored)" : "") + " " + mark)
