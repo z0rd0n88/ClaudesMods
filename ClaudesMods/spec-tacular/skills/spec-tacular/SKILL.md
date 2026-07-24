@@ -46,6 +46,10 @@ Only after approval. Draft the full spec using
 [`references/spec-template.md`](references/spec-template.md). Detailed, concise,
 technical. Apply these disciplines throughout:
 
+- **Persist:** Write the finished spec to a file — `docs/specs/<slug>.md` by default, or an
+  existing doc/location the user names — via `Write`/`Edit`. Confirm the path with the user if
+  none was given. A spec that only exists in chat is lost the moment the session ends.
+
 - **Decision tracking:** At every design/technical junction, record the choice
   and *why* — risks, feasibility, practicality, correctness. Use the Decision
   Record format in the template.
