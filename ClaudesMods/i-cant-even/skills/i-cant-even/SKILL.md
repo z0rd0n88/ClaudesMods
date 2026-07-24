@@ -9,6 +9,7 @@ allowed-tools:
   - Agent
   - AskUserQuestion
   - Write
+  - Edit
 ---
 
 # i-cant-even

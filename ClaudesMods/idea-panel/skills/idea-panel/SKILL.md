@@ -7,6 +7,8 @@ allowed-tools:
   - Glob
   - Grep
   - Agent
+  - Write
+  - AskUserQuestion
 ---
 
 # idea-panel
