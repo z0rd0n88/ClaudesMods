@@ -390,7 +390,11 @@ After APPROVE (or final-round-with-open-findings), produce the **ship report**:
 - <comment> …
 ```
 
-Print the report. Do NOT auto-open the PR — the user opens it (or you do explicitly if they ask).
+Write the report to `.code-rinse-repeat/<slug>/report.md` — it's the run's permanent record,
+same as `state.json` and the per-round reviews. Print it too. If a PR already exists for
+`<branch>`, also post the report as a PR comment. Do NOT auto-open the PR — the user opens it
+(or you do explicitly if they ask); if no PR exists yet, note the report's file path so the user
+can paste it in when they do.
 
 ## 6. The exclusion list (across rounds)
 

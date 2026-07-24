@@ -93,7 +93,7 @@ After all lenses return, capture each output verbatim, keyed by lens name in ros
 Expand the synthesizer brief (`references/synthesizer-brief.md`) with `{{TOPIC}}`, `{{N_LENSES}}`, `{{CONTEXT_BLOCK}}`, and `{{LENS_OUTPUTS}}` (each lens's verbatim output under a `### Lens: <name>` block, `---`-delimited). The synthesizer routes any `critical-thinking` carve-out output to its own "Assumptions & Open Questions" section and never folds it into the idea ranking (see the brief). Spawn one `Agent` call, `subagent_type: general-purpose`, `description: "Idea panel: synthesize"`.
 
 ### 5.6 Print verbatim
-Print the synthesized report as the final message. If `--write-to` was set, `mkdir -p` the parent, write the report, and prepend one line `Wrote: <absolute path>`. Then suggest the natural follow-on pipeline: `idea-autopsy:iterate-to-v2` → `product-management:write-spec` / `to-prd` → `idea-autopsy:evaluate-proposal-harsh`.
+Print the synthesized report as the final message. If `--write-to` was set, `mkdir -p` the parent, write the report, and prepend one line `Wrote: <absolute path>`. If `--write-to` was **not** set, ask the user (inline or via `AskUserQuestion`) whether to save the shortlist before it's gone — suggest a default like `docs/ideas/<topic-slug>.md` — rather than defaulting to chat-only. Then suggest the natural follow-on pipeline: `idea-autopsy:iterate-to-v2` → `product-management:write-spec` / `to-prd` → `idea-autopsy:evaluate-proposal-harsh`.
 
 ## 6. Error handling
 

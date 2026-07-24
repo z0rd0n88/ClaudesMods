@@ -95,6 +95,13 @@ Each persona returns only what its output contract specifies — keep responses 
 
 If the memo doesn't fit on a screen, you grilled too long.
 
+### 4. Persist
+
+The memo is a one-shot advisory output with no fixed home — don't assume where it belongs. Ask
+the user (`AskUserQuestion` or inline) whether to save it: append to an existing doc/ADR
+(`docs/adr/`), write a new file (e.g. `docs/decisions/<slug>.md`), or leave it in chat only. Save
+via `Write`/`Edit` per their answer.
+
 ## Invocation
 
 User-triggered only. Valid triggers: `/i-cant-even`, "i-cant-even", "i cant even".
